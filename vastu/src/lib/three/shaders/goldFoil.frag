@@ -1,0 +1,1 @@
+// Gold foil material shader
