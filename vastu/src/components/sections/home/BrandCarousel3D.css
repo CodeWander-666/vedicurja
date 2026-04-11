@@ -1,0 +1,84 @@
+.brand-title {
+  text-shadow: 0px 4px 8px rgba(200, 138, 93, 0.15);
+  letter-spacing: 0.1em;
+  transition: transform 0.3s ease;
+}
+.brand-title:hover {
+  transform: translateY(-2px);
+}
+
+.carousel-3d-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 20px 0;
+}
+
+.carousel-3d-track {
+  display: flex;
+  width: max-content;
+  animation: scroll3D 40s linear infinite;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+.carousel-3d-track:hover {
+  animation-play-state: running; /* 保持滚动，不暂停 */
+}
+
+.carousel-3d-card {
+  width: 200px;
+  height: 100px;
+  margin: 0 15px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(200, 138, 93, 0.2);
+  box-shadow: 0 10px 20px -5px rgba(26, 42, 58, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  transform: rotateY(0deg) translateZ(0);
+  flex-shrink: 0;
+  color: #1A2A3A;
+  font-weight: 600;
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* 3D 悬停效果 */
+.carousel-3d-card:hover {
+  transform: rotateY(10deg) translateZ(30px) scale(1.05);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #E8B960;
+  box-shadow: 0 25px 35px -8px rgba(200, 138, 93, 0.4), 0 0 0 2px rgba(232, 185, 96, 0.3);
+  z-index: 100;
+}
+
+.card-content {
+  text-align: center;
+  padding: 10px;
+}
+
+.brand-name {
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #1A2A3A 0%, #C88A5D 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+/* 品牌特定颜色微调 */
+.brand-tcs .brand-name { background: linear-gradient(135deg, #1A2A3A 0%, #0077b6 80%); -webkit-background-clip: text; background-clip: text; }
+.brand-mahindra .brand-name { background: linear-gradient(135deg, #1A2A3A 0%, #e31837 80%); -webkit-background-clip: text; background-clip: text; }
+.brand-prlog .brand-name { background: linear-gradient(135deg, #1A2A3A 0%, #2d6a4f 80%); -webkit-background-clip: text; background-clip: text; }
+.brand-openpr .brand-name { background: linear-gradient(135deg, #1A2A3A 0%, #457b9d 80%); -webkit-background-clip: text; background-clip: text; }
+.brand-247pr .brand-name { background: linear-gradient(135deg, #1A2A3A 0%, #e76f51 80%); -webkit-background-clip: text; background-clip: text; }
+.brand-1888pr .brand-name { background: linear-gradient(135deg, #1A2A3A 0%, #9c89b8 80%); -webkit-background-clip: text; background-clip: text; }
+.brand-adani .brand-name { background: linear-gradient(135deg, #1A2A3A 0%, #f4a261 80%); -webkit-background-clip: text; background-clip: text; }
+
+@keyframes scroll3D {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-200px * 7 - 15px * 7)); } /* 根据卡片数量计算 */
+}
