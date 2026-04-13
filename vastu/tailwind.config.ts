@@ -1,5 +1,7 @@
 import type { Config } from 'tailwindcss';
+
 const config: Config = {
+  darkMode: 'class',
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
@@ -8,27 +10,36 @@ const config: Config = {
         'ganga-sandstone': '#C88A5D',
         'nidra-indigo': '#1A2A3A',
         'prakash-gold': '#E8B960',
-        'jade-green': '#2D6A4F',
-        'burnt-orange': '#E76F51',
-        'sky-blue': '#457B9D'
+        'bg-primary': 'var(--bg-primary)',
+        'bg-secondary': 'var(--bg-secondary)',
+        'bg-tertiary': 'var(--bg-tertiary)',
+        'bg-elevated': 'var(--bg-elevated)',
+        'surface-card': 'var(--surface-card)',
+        'surface-overlay': 'var(--surface-overlay)',
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-muted': 'var(--text-muted)',
+        'border-light': 'var(--border-light)',
+        'border-strong': 'var(--border-strong)',
+        'shadow-sm': 'var(--shadow-sm)',
+        'shadow-md': 'var(--shadow-md)',
+        'shadow-lg': 'var(--shadow-lg)',
+        'shadow-glow': 'var(--shadow-glow)',
       },
       fontFamily: {
         serif: ['var(--font-cormorant)', 'serif'],
         sans: ['var(--font-inter)', 'sans-serif'],
         mono: ['var(--font-space-mono)', 'monospace'],
-        script: ['var(--font-samarkan)', 'cursive']
       },
-      animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
-        'spin-slow': 'spin 20s linear infinite'
+      boxShadow: {
+        'luxury-sm': 'var(--shadow-sm)',
+        'luxury-md': 'var(--shadow-md)',
+        'luxury-lg': 'var(--shadow-lg)',
+        'luxury-glow': 'var(--shadow-glow)',
       },
-      keyframes: {
-        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-        'glow-pulse': { '0%,100%': { opacity: '0.6' }, '50%': { opacity: '1' } }
-      }
-    }
+    },
   },
-  plugins: [require('tailwindcss-animate')]
+  plugins: [],
 };
+
 export default config;

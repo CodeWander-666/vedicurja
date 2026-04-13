@@ -105,7 +105,7 @@ export function CourseDashboard() {
               <button onClick={() => setActiveModule(null)} className="text-[#C88A5D] hover:underline">← Back to Modules</button>
               <h4 className="font-serif text-2xl mb-4">{activeModule.title}</h4>
               {activeModule.chapters.map((chap, i) => (
-                <button key={chap.id} onClick={() => { setActiveChapter(chap); play('hoverLink'); }} className="w-full text-left p-4 bg-white rounded-xl border border-[#C88A5D]/10 hover:border-[#C88A5D] hover:shadow-md transition-all flex justify-between items-center">
+                <button key={chap.id} onClick={() => { setActiveChapter(chap); play('hoverSlide'); }} className="w-full text-left p-4 bg-white rounded-xl border border-[#C88A5D]/10 hover:border-[#C88A5D] hover:shadow-md transition-all flex justify-between items-center">
                   <span className="font-sans">Chapter {i+1}: {chap.title}</span>
                   <span>{chap.completed ? '✓' : '→'}</span>
                 </button>

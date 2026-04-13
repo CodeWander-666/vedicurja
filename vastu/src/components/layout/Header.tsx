@@ -1,26 +1,84 @@
 'use client';
 import Link from 'next/link';
 import { MagneticButton } from '@/components/global/MagneticButton';
-import { AnimatedLogo } from '@/components/global/AnimatedLogo';
+import { useSound } from '@/hooks/useSound';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
+import { User, Session } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
 
 export function Header() {
+  const { play } = useSound();
+  const { t } = useLanguage();
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
+      setUser(session?.user ?? null);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event: string, session: Session | null) => {
+      setUser(session?.user ?? null);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push('/');
+  };
+
+  const menuItems = [
+    { key: 'home', href: '/' },
+    { key: 'freeAITools', href: '/free-tools' },
+    { key: 'services', href: '/services' },
+    { key: 'learnVastu', href: '/learn-vastu' },
+    { key: 'blogs', href: '/insights' },
+    { key: 'testimonials', href: '/client-stories' },
+    { key: 'profile', href: '/dashboard' },
+  ];
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 bg-[#F9F6F0]/80 backdrop-blur-md border-b border-[#C88A5D]/20">
+    <header className="fixed top-0 left-0 right-0 z-30 bg-bg-elevated backdrop-blur-md border-b border-border-light">
       <div className="container mx-auto px-6 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <AnimatedLogo className="w-12 h-12" />
-          <span className="font-serif text-2xl text-[#1A2A3A]">Vastu<span className="text-[#C88A5D]">.</span></span>
+        <Link href="/" className="font-serif text-2xl text-text-primary">
+          VedicUrja<span className="text-ganga-sandstone">.</span>
         </Link>
-        <nav className="hidden md:flex items-center space-x-10">
-          <Link href="/about" className="font-sans text-[#1A2A3A]/80 hover:text-[#C88A5D] transition-colors">About</Link>
-          <Link href="/services" className="font-sans text-[#1A2A3A]/80 hover:text-[#C88A5D] transition-colors">Services</Link>
-          <Link href="/library" className="font-sans text-[#1A2A3A]/80 hover:text-[#C88A5D] transition-colors">Library</Link>
-          <Link href="/insights" className="font-sans text-[#1A2A3A]/80 hover:text-[#C88A5D] transition-colors">Insights</Link>
+        <nav className="hidden lg:flex items-center space-x-6">
+          {menuItems.map(item => (
+            <Link
+              key={item.key}
+              href={item.href}
+              className="font-sans text-sm text-text-secondary hover:text-ganga-sandstone transition-colors"
+              onMouseEnter={() => play('hoverSlide')}
+              onClick={() => play('clickSecondary')}
+            >
+              {t(`common.${item.key}`)}
+            </Link>
+          ))}
         </nav>
-        <MagneticButton className="bg-[#C88A5D] hover:bg-[#D4A373] text-white px-6 py-2.5 rounded-full font-sans text-sm font-medium transition-colors shadow-md">
-          Consult the Acharya
-        </MagneticButton>
+        <div className="flex items-center gap-3">
+          {user ? (
+            <button
+              onClick={handleSignOut}
+              className="text-sm text-text-secondary hover:text-red-500 transition-colors"
+            >
+              Sign Out
+            </button>
+          ) : (
+            <>
+              <Link href="/signin" className="text-sm text-text-secondary hover:text-ganga-sandstone">
+                Sign In
+              </Link>
+              <MagneticButton className="bg-ganga-sandstone hover:bg-[#D4A373] text-white px-5 py-2 rounded-full text-sm">
+                {t('common.consult')}
+              </MagneticButton>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );
 }
+export default Header;

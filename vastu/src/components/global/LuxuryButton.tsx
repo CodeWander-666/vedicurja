@@ -14,7 +14,7 @@ export function LuxuryButton({ href, children, className = '' }: LuxuryButtonPro
   return (
     <Link
       href={href}
-      onMouseEnter={() => play('hoverLink')}
+      onMouseEnter={() => play('hoverSlide')}
       onClick={() => play('clickSecondary')}
       className={`group relative inline-flex items-center h-12 px-6 text-base font-medium rounded-lg overflow-hidden transition-all duration-500 border border-[#C88A5D]/30 bg-[#1A2A3A] text-white hover:text-[#E8B960] underline underline-offset-2 hover:underline hover:underline-offset-4 hover:decoration-2 origin-left ${className}`}
     >
