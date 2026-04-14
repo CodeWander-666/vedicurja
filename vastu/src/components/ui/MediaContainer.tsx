@@ -17,7 +17,8 @@ export function MediaContainer({ src, type, alt = '', className = '', fallbackKe
     if (type === 'image') return media.fallback.images[fallbackKey as keyof typeof media.fallback.images];
     return media.fallback.videos[fallbackKey as keyof typeof media.fallback.videos];
   };
-  const finalSrc = error || !src ? getFallback() : src;
+  // Use fallback if no src provided or if error occurred
+  const finalSrc = (!src || error) ? getFallback() : src;
 
   if (type === 'video') {
     return (

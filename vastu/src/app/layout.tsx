@@ -4,8 +4,6 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/global/LanguageSelector";
 import { AdminProvider } from "@/contexts/AdminContext";
 import { fontSerif, fontSans, fontMono } from "@/styles/fonts";
-import PageViewTracker from "@/components/global/PageViewTracker";
-import SentryErrorBoundary from "@/components/global/SentryErrorBoundary";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,10 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <LanguageProvider>
             <AdminProvider>
               <LanguageSelector />
-              <PageViewTracker />
-              <SentryErrorBoundary>
-                {children}
-              </SentryErrorBoundary>
+              {children}
             </AdminProvider>
           </LanguageProvider>
         </ThemeProvider>
