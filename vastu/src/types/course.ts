@@ -31,3 +31,8 @@ export interface UserProgress {
   chapter_id: string;
   completed: boolean;
 }
+
+export interface QuizScore {
+  quizId: string;
+  score: number;
+}

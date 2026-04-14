@@ -32,7 +32,6 @@ export default function MyLibraryPage() {
     if (!user) return;
 
     const fetchEnrolledCourses = async () => {
-      // 获取用户注册的课程
       const { data: enrollments, error: enrollError } = await supabase
         .from('user_courses')
         .select(`
@@ -49,12 +48,10 @@ export default function MyLibraryPage() {
         return;
       }
 
-      // 获取每个课程的进度
       const coursesWithProgress = await Promise.all(
         (enrollments || []).map(async (enrollment: any) => {
           const course = enrollment.courses;
           
-          // 获取课程的所有章节
           const { data: modules } = await supabase
             .from('modules')
             .select('id, chapters(id)')
@@ -62,7 +59,6 @@ export default function MyLibraryPage() {
           
           const totalChapters = modules?.flatMap(m => m.chapters).length || 0;
           
-          // 获取用户已完成的章节
           const { data: progress } = await supabase
             .from('user_chapter_progress')
             .select('chapter_id')

@@ -65,7 +65,6 @@ export default function CourseDashboard({ course }: { course: Course }) {
   const [completing, setCompleting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // 获取模块、章节及测验
   useEffect(() => {
     const fetchModules = async () => {
       try {
@@ -95,7 +94,6 @@ export default function CourseDashboard({ course }: { course: Course }) {
     fetchModules();
   }, [course.id]);
 
-  // 获取用户注册状态、进度和测验分数
   useEffect(() => {
     if (!user) return;
 
@@ -118,7 +116,8 @@ export default function CourseDashboard({ course }: { course: Course }) {
         .from('user_quiz_attempts')
         .select('quiz_id, score')
         .eq('user_id', user.id);
-      setQuizScores(attempts || []);
+      // Map quiz_id to quizId for internal use
+      setQuizScores((attempts || []).map((a: any) => ({ quizId: a.quiz_id, score: a.score })));
     };
     fetchUserData();
   }, [user, course.id]);
@@ -143,7 +142,7 @@ export default function CourseDashboard({ course }: { course: Course }) {
 
     if (!error) {
       setUserProgress(prev => [...prev.filter(p => p.chapter_id !== chapterId), { chapter_id: chapterId, completed: true }]);
-      // 积分由触发器自动增加，但前端需要立即反映（可选重新获取profile）
+      // Coins are incremented by database trigger; optionally refresh profile
       play('success');
     }
     setCompleting(null);
@@ -184,7 +183,6 @@ export default function CourseDashboard({ course }: { course: Course }) {
     });
     const score = Math.round((correctCount / questions.length) * 100);
 
-    // 保存分数
     const { error } = await supabase
       .from('user_quiz_attempts')
       .upsert({
@@ -196,7 +194,7 @@ export default function CourseDashboard({ course }: { course: Course }) {
 
     if (!error) {
       setQuizScores(prev => [...prev.filter(q => q.quizId !== activeQuiz.quizId), { quizId: activeQuiz.quizId, score }]);
-      // 奖励积分（每通过测验额外加20分）
+      // Bonus coins for passing (≥60%)
       if (score >= 60) {
         await supabase
           .from('profiles')

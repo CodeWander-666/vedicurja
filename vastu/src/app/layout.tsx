@@ -4,22 +4,27 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "@/components/global/LanguageSelector";
 import { AdminProvider } from "@/contexts/AdminContext";
 import { fontSerif, fontSans, fontMono } from "@/styles/fonts";
+import PageViewTracker from "@/components/global/PageViewTracker";
+import SentryErrorBoundary from "@/components/global/SentryErrorBoundary";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "VedicUrja | Ancient Wisdom, Modern Precision",
-  description: "Global Vastu Consultancy rooted in Uttar Pradesh tradition",
+  description: "Global Vastu Consultancy rooted in authentic Vedic tradition.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fontSerif.variable} ${fontSans.variable} ${fontMono.variable}`} suppressHydrationWarning>
-      <body className="bg-bg-primary text-text-primary antialiased">
+      <body className="bg-vastu-parchment text-nidra-indigo antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <LanguageProvider>
             <AdminProvider>
               <LanguageSelector />
-              {children}
+              <PageViewTracker />
+              <SentryErrorBoundary>
+                {children}
+              </SentryErrorBoundary>
             </AdminProvider>
           </LanguageProvider>
         </ThemeProvider>

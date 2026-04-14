@@ -33,6 +33,7 @@ export function Header() {
     { key: 'home', href: '/' },
     { key: 'freeAITools', href: '/free-tools' },
     { key: 'services', href: '/services' },
+    { key: 'bookings', href: '/bookings' },
     { key: 'learnVastu', href: '/learn-vastu' },
     { key: 'blogs', href: '/insights' },
     { key: 'testimonials', href: '/client-stories' },
@@ -40,9 +41,9 @@ export function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 bg-bg-elevated backdrop-blur-md border-b border-border-light">
+    <header className="fixed top-0 left-0 right-0 z-30 bg-bg-elevated backdrop-blur-md border-b border-prakash-gold/20">
       <div className="container mx-auto px-6 py-3 flex items-center justify-between">
-        <Link href="/" className="font-serif text-2xl text-text-primary">
+        <Link href="/" className="font-serif text-2xl text-nidra-indigo">
           VedicUrja<span className="text-ganga-sandstone">.</span>
         </Link>
         <nav className="hidden lg:flex items-center space-x-6">
@@ -50,7 +51,7 @@ export function Header() {
             <Link
               key={item.key}
               href={item.href}
-              className="font-sans text-sm text-text-secondary hover:text-ganga-sandstone transition-colors"
+              className="font-sans text-sm text-nidra-indigo/70 hover:text-ganga-sandstone transition-colors"
               onMouseEnter={() => play('hoverSlide')}
               onClick={() => play('clickSecondary')}
             >
@@ -60,17 +61,10 @@ export function Header() {
         </nav>
         <div className="flex items-center gap-3">
           {user ? (
-            <button
-              onClick={handleSignOut}
-              className="text-sm text-text-secondary hover:text-red-500 transition-colors"
-            >
-              Sign Out
-            </button>
+            <button onClick={handleSignOut} className="text-sm text-nidra-indigo/70 hover:text-red-500">Sign Out</button>
           ) : (
             <>
-              <Link href="/signin" className="text-sm text-text-secondary hover:text-ganga-sandstone">
-                Sign In
-              </Link>
+              <Link href="/signin" className="text-sm text-nidra-indigo/70 hover:text-ganga-sandstone">Sign In</Link>
               <MagneticButton className="bg-ganga-sandstone hover:bg-[#D4A373] text-white px-5 py-2 rounded-full text-sm">
                 {t('common.consult')}
               </MagneticButton>
