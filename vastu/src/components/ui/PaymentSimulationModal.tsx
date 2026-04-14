@@ -1,90 +1,58 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSound } from '@/hooks/useSound';
+import { supabase } from '@/lib/supabaseClient';
+import { useRouter } from 'next/navigation';
 
-interface PaymentSimulationModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   tool: string;
   amount: number;
-  purpose: string;
+  userId?: string;
 }
 
-export default function PaymentSimulationModal({ isOpen, onClose, tool, amount, purpose }: PaymentSimulationModalProps) {
-  const [step, setStep] = useState<'details' | 'processing' | 'success'>('details');
-  const { play } = useSound();
+export default function PaymentSimulationModal({ isOpen, onClose, tool, amount, userId }: Props) {
+  const [step, setStep] = useState<'form' | 'processing'>('form');
+  const router = useRouter();
 
-  const handleSimulatePayment = () => {
+  const handleSimulate = async () => {
     setStep('processing');
-    play('clickPrimary');
-    
+    await supabase.from('payments').insert({
+      user_id: userId || null,
+      amount,
+      tool,
+      status: 'simulated_success',
+      created_at: new Date().toISOString(),
+    });
     setTimeout(() => {
-      setStep('success');
-      play('success');
-      
-      setTimeout(() => {
-        onClose();
-        setStep('details');
-      }, 2000);
-    }, 1500);
+      router.push('/payment/status?success=true');
+    }, 2000);
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={onClose}
-        >
-          <motion.div
-            initial={{ scale: 0.9, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.9, y: 20 }}
-            className="bg-gradient-to-br from-white to-[#F9F6F0] p-8 rounded-3xl max-w-md w-full shadow-2xl border border-[#E8B960]/50"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {step === 'details' && (
+        <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <motion.div initial={{ scale:0.9 }} animate={{ scale:1 }} className="bg-white p-8 rounded-3xl max-w-md w-full">
+            <h3 className="font-serif text-2xl mb-4">Simulate Payment</h3>
+            <p className="mb-4">Amount: ₹{amount}</p>
+            {step === 'form' ? (
               <>
-                <div className="text-6xl mb-4">💳</div>
-                <h3 className="font-serif text-2xl text-[#1A2A3A] mb-2">Complete Payment</h3>
-                <p className="text-[#1A2A3A]/70 mb-6">{purpose}</p>
-                
-                <div className="bg-[#C88A5D]/10 p-4 rounded-2xl mb-6">
-                  <p className="text-sm uppercase tracking-wider text-[#C88A5D]">Total Amount</p>
-                  <p className="font-serif text-3xl text-[#1A2A3A]">₹{amount}</p>
+                <input placeholder="Card Number (dummy)" className="w-full p-3 border rounded mb-3" defaultValue="4242 4242 4242 4242" />
+                <div className="flex gap-3 mb-4">
+                  <input placeholder="MM/YY" className="w-1/2 p-3 border rounded" defaultValue="12/28" />
+                  <input placeholder="CVC" className="w-1/2 p-3 border rounded" defaultValue="123" />
                 </div>
-                
-                <p className="text-xs text-center text-[#1A2A3A]/50 mb-4">
-                  This is a demo – click below to simulate a successful payment.
-                </p>
-                
-                <button
-                  onClick={handleSimulatePayment}
-                  className="w-full bg-gradient-to-r from-[#C88A5D] to-[#E8B960] text-white font-medium py-3 rounded-full"
-                >
-                  Simulate Payment
-                </button>
+                <button onClick={handleSimulate} className="w-full luxury-button">Pay ₹{amount} (Simulated)</button>
               </>
-            )}
-            
-            {step === 'processing' && (
+            ) : (
               <div className="text-center py-8">
-                <div className="w-16 h-16 border-4 border-[#C88A5D] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="font-serif text-xl">Processing Payment...</p>
+                <div className="w-12 h-12 border-4 border-sacred-saffron border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p>Processing payment...</p>
               </div>
             )}
-            
-            {step === 'success' && (
-              <div className="text-center py-8">
-                <div className="text-6xl mb-4">✅</div>
-                <h3 className="font-serif text-2xl text-[#1A2A3A] mb-2">Payment Successful!</h3>
-                <p className="text-[#1A2A3A]/70">Your premium access has been unlocked.</p>
-              </div>
-            )}
+            <button onClick={onClose} className="w-full mt-3 text-sm text-nidra-indigo/60">Cancel</button>
           </motion.div>
         </motion.div>
       )}

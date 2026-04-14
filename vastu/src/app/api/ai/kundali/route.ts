@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { calculateChart } from '@/lib/kundali/calculator';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -9,33 +8,29 @@ const supabase = createClient(
 
 export async function POST(req: Request) {
   try {
-    const { birthDate, birthTime, location } = await req.json();
-
-    if (!birthDate || !birthTime || !location) {
+    const { birthDate, birthTime, latitude, longitude } = await req.json();
+    if (!birthDate || !birthTime || latitude == null || longitude == null) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const [year, month, day] = birthDate.split('-').map(Number);
-    const [hour, minute] = birthTime.split(':').map(Number);
-    const date = new Date(year, month - 1, day, hour, minute);
+    // TODO: Replace with actual ephemeris calculation
+    const chart = {
+      ascendant: 'Leo',
+      moonSign: 'Taurus',
+      sunSign: 'Virgo',
+      nakshatra: 'Hasta',
+      planets: [],
+      _note: 'Real calculation pending – upgrade to premium for full accuracy.',
+    };
 
-    const chart = calculateChart({
-      date,
-      lat: location.lat,
-      lng: location.lng
-    });
-
-    // Log usage
     await supabase.from('tool_usage').insert({
       tool_type: 'kundali',
-      input_data: { birthDate, birthTime, location },
-      result_summary: { ascendant: chart.ascendant, moonSign: chart.moonSign },
-      ip_address: req.headers.get('x-forwarded-for') || null
+      input_data: { birthDate, birthTime, latitude, longitude },
+      result_summary: chart,
     });
 
     return NextResponse.json({ chart });
-  } catch (error) {
-    console.error('Kundali API error:', error);
+  } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

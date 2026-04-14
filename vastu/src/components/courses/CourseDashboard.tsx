@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useSound } from '@/hooks/useSound';
 import { useAuth } from '@/hooks/useAuth';
-import { Header } from '@/components/layout/Header';
+import Header from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { LuxuryCursor } from '@/components/global/LuxuryCursor';
 import { SoundController } from '@/components/global/SoundController';
-import { SmoothScroll } from '@/components/global/ScrollSmoother';
+import SmoothScroll from '@/components/global/ScrollSmoother';
 import GradientBackground from '@/components/global/GradientBackground';
 
 interface Chapter {

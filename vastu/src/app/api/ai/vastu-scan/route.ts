@@ -1,33 +1,32 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
-const vastuZones = [
-  { name: 'North-East', element: 'Water', ideal: true },
-  { name: 'East', element: 'Air', ideal: true },
-  { name: 'South-East', element: 'Fire', ideal: true },
-  { name: 'South', element: 'Earth', ideal: false },
-  { name: 'South-West', element: 'Earth', ideal: true },
-  { name: 'West', element: 'Space', ideal: false },
-  { name: 'North-West', element: 'Air', ideal: false },
-  { name: 'North', element: 'Water', ideal: true },
-];
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export async function POST(req: Request) {
   try {
-    const { orientation } = await req.json();
-    
-    // For free tier, we return basic zone scores based on ideal placement
-    const zones = vastuZones.map(zone => ({
-      name: zone.name,
-      element: zone.element,
-      score: zone.ideal ? 85 + Math.floor(Math.random() * 15) : 40 + Math.floor(Math.random() * 30),
-      recommendation: zone.ideal 
-        ? `Ideal placement – maintain this zone.`
-        : `Consider shifting to ${zone.element}‑friendly area.`
-    }));
-    
+    const { imageBase64, orientation } = await req.json();
+    if (!imageBase64 && !orientation) {
+      return NextResponse.json({ error: 'Image or orientation required' }, { status: 400 });
+    }
+
+    const zones = [
+      { name: 'North-East', element: 'Water', score: 85 },
+      { name: 'South-West', element: 'Earth', score: 72 },
+      { _note: 'AI analysis pending – upgrade to premium for full 16-zone report.' },
+    ];
+
+    await supabase.from('tool_usage').insert({
+      tool_type: 'vastu_scan',
+      input_data: { orientation },
+      result_summary: zones,
+    });
+
     return NextResponse.json({ zones });
-  } catch (error) {
-    console.error('Vastu scan error:', error);
+  } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

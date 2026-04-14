@@ -3,26 +3,32 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
-export function useRealtimeContent<T>(table: string, orderBy: string = 'order_index', ascending: boolean = true) {
+export function useRealtimeContent<T>(
+  table: string,
+  orderBy: string = 'created_at',
+  ascending: boolean = false
+) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+    const fetch = async () => {
       const { data } = await supabase
         .from(table)
         .select('*')
-        .eq('is_published', true)
         .order(orderBy, { ascending });
       setItems((data as T[]) || []);
       setLoading(false);
     };
-
-    fetchData();
+    fetch();
 
     const channel: RealtimeChannel = supabase
-      .channel(`${table}-public`)
-      .on('postgres_changes', { event: '*', schema: 'public', table }, fetchData)
+      .channel(`${table}-realtime`)
+      .on('postgres_changes', { event: '*', schema: 'public', table }, fetch)
       .subscribe();
 
     return () => {

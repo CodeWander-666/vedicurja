@@ -1,2 +1,24 @@
-import HomePageClient from './HomePageClient';
-export default function HomePage() { return <HomePageClient />; }
+'use client';
+import Header from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import SmoothScroll from '@/components/global/ScrollSmoother';
+import { LuxuryCursor } from '@/components/global/LuxuryCursor';
+import { SoundController } from '@/components/global/SoundController';
+
+export default function HomePage() {
+  return (
+    <>
+      <LuxuryCursor />
+      <SoundController />
+      <Header />
+      <SmoothScroll>
+        <main className="relative z-10 pt-32 pb-20 min-h-screen bg-vastu-parchment">
+          <div className="container mx-auto px-6">
+            <h1 className="font-serif text-5xl text-center text-nidra-indigo mb-6">Ancient Wisdom. Modern Precision.</h1><p className="text-center text-nidra-indigo/70">Guided by Acharya, rooted in sacred geometry.</p>
+          </div>
+        </main>
+        <Footer />
+      </SmoothScroll>
+    </>
+  );
+}
