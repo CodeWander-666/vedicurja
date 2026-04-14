@@ -18,7 +18,7 @@ const LuxuryCursor = dynamic(() => import('@/components/global/LuxuryCursor'), {
 const SoundController = dynamic(() => import('@/components/global/SoundController'), { ssr: false });
 const BrandCarousel3D = dynamic(() => import('@/components/sections/home/BrandCarousel3D'), { ssr: false });
 const ServicesGrid = dynamic(() => import('@/components/sections/home/ServicesGrid'), { ssr: false });
-const LineageSection = dynamic(() => import('@/components/sections/home/LineageSection'), { ssr:80 });
+const LineageSection = dynamic(() => import('@/components/sections/home/LineageSection'), { ssr: false });
 const GlobalSection = dynamic(() => import('@/components/sections/home/GlobalSection'), { ssr: false });
 const TestimonialsSlider = dynamic(() => import('@/components/sections/home/TestimonialsSlider'), { ssr: false });
 const FreeToolsSection = dynamic(() => import('@/components/sections/home/FreeToolsSection'), { ssr: false });
