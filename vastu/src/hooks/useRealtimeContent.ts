@@ -1,7 +1,7 @@
 'use client';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import type { RealtimeChannel } from '@supabase/supabase-js';
+import { subscribeToTable } from '@/lib/realtime/channelManager';
 
 export function useRealtimeContent<T>(
   table: string,
@@ -10,8 +10,6 @@ export function useRealtimeContent<T>(
 ) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
-  const channelRef = useRef<RealtimeChannel | null>(null);
-  const isMountedRef = useRef(true);
 
   const fetchData = useCallback(async () => {
     if (!supabase) return;
@@ -21,57 +19,21 @@ export function useRealtimeContent<T>(
         .select('*')
         .order(orderBy, { ascending });
       if (error) throw error;
-      if (isMountedRef.current) {
-        setItems((data as T[]) || []);
-      }
+      setItems((data as T[]) || []);
     } catch (err) {
       console.error(`Error fetching ${table}:`, err);
     } finally {
-      if (isMountedRef.current) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
   }, [table, orderBy, ascending]);
 
   useEffect(() => {
-    isMountedRef.current = true;
-    let channel: RealtimeChannel | null = null;
-    
-    const init = async () => {
-      await fetchData();
-      
-      if (supabase && !channel) {
-        // Create channel only once per component instance
-        channel = supabase
-          .channel(`${table}-realtime-${Date.now()}`) // unique name to avoid conflicts
-          .on(
-            'postgres_changes',
-            { event: '*', schema: 'public', table },
-            () => {
-              if (isMountedRef.current) {
-                fetchData();
-              }
-            }
-          )
-          .subscribe((status) => {
-            if (status === 'SUBSCRIBED') {
-              console.log(`✅ Realtime subscribed to ${table}`);
-            }
-          });
-        channelRef.current = channel;
-      }
-    };
-
-    init();
-
-    return () => {
-      isMountedRef.current = false;
-      if (channelRef.current) {
-        channelRef.current.unsubscribe().catch(console.warn);
-        channelRef.current = null;
-      }
-    };
-  }, [table, orderBy, ascending, fetchData]);
+    let isMounted = true;
+    const wrappedFetch = async () => { if (isMounted) await fetchData(); };
+    wrappedFetch();
+    const unsubscribe = subscribeToTable(table, () => { if (isMounted) fetchData(); });
+    return () => { isMounted = false; unsubscribe(); };
+  }, [table, fetchData]);
 
   return { items, loading };
 }

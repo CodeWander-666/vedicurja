@@ -44,7 +44,7 @@ export function FreeToolCard3D({
           <span className="text">{description}</span>
         </div>
         <div className="bottom">
-          <Link href={href || "#" || '#' || '#'} className="try-button">
+          <Link href={href || "#" || '#'} className="try-button">
             Try Now →
           </Link>
         </div>

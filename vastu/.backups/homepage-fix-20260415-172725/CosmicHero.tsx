@@ -87,11 +87,11 @@ export function CosmicHero() {
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <MagneticButton className="luxury-button">
-            <Link href={heroData.button_link || '#'}>{heroData.button_text}</Link>
+            <Link href={heroData.button_link || "#" || '#' || '#'}>{heroData.button_text}</Link>
           </MagneticButton>
           {heroData.secondary_button_text && heroData.secondary_button_link && (
             <MagneticButton className="bg-transparent border-2 border-prakash-gold text-nidra-indigo hover:bg-prakash-gold/10 px-8 py-4 rounded-full">
-              <Link href={heroData.secondary_button_link || '#'}>{heroData.secondary_button_text}</Link>
+              <Link href={heroData.secondary_button_link || "#" || '#' || '#'}>{heroData.secondary_button_text}</Link>
             </MagneticButton>
           )}
         </motion.div>

@@ -96,7 +96,7 @@ export default function ServiceCard3DEnhanced({
           </div>
           
           <Link
-            href={href || '#'}
+            href={href}
             className="mt-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full text-nidra-indigo font-medium border border-prakash-gold/30 hover:bg-prakash-gold hover:text-white transition-all group/link"
             onClick={() => play('clickPrimary')}
           >

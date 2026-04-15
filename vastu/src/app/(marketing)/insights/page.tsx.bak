@@ -45,7 +45,7 @@ function FeaturedPost({ post }: { post: BlogPost }) {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-6 max-w-6xl">
         <h2 className="font-serif text-3xl text-nidra-indigo mb-8">Featured Article</h2>
-        <Link href={`/insights/post?slug=${post.slug || '#'}`}>
+        <Link href={`/insights/post?slug=${post.slug}`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

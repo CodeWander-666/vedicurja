@@ -46,7 +46,7 @@ export function VirtualConsultCTA() {
         <motion.h2 className="font-serif text-4xl md:text-6xl mb-6">{data.title}</motion.h2>
         <p className="text-xl text-white/80 max-w-3xl mx-auto mb-10">{data.description}</p>
         <motion.div whileHover={{ scale: 1.05 }} className="inline-block">
-          <Link href={data.button_link || "#" || '#' || '#'} className="bg-prakash-gold hover:bg-sacred-saffron text-nidra-indigo font-bold px-10 py-5 rounded-full text-lg shadow-2xl transition-all">
+          <Link href={data.button_link || "#" || '#'} className="bg-prakash-gold hover:bg-sacred-saffron text-nidra-indigo font-bold px-10 py-5 rounded-full text-lg shadow-2xl transition-all">
             {data.button_text}
           </Link>
         </motion.div>

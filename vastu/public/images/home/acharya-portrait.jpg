@@ -1,1 +1,5 @@
-<html><body>404</body></html>
+<svg width="400" height="500" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="500" fill="#1A2A3A"/>
+  <circle cx="200" cy="200" r="80" fill="#C88A5D"/>
+  <text x="200" y="320" font-family="serif" font-size="24" fill="#FDFBF7" text-anchor="middle">Acharya</text>
+</svg>

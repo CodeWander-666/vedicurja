@@ -44,7 +44,7 @@ export function FinalCTA() {
           <h2 className="font-serif text-5xl md:text-7xl text-white mb-6">{data.title}</h2>
           {data.subtitle && <p className="text-xl text-white/90 max-w-2xl mx-auto mb-10">{data.subtitle}</p>}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href={data.button_link || "#" || '#' || '#' || '#'} className="bg-white text-nidra-indigo font-bold px-10 py-5 rounded-full text-lg shadow-xl hover:shadow-2xl transition">{data.button_text}</Link>
+            <Link href={data.button_link || "#" || '#' || '#'} className="bg-white text-nidra-indigo font-bold px-10 py-5 rounded-full text-lg shadow-xl hover:shadow-2xl transition">{data.button_text}</Link>
             <Link href="/contact" className="border-2 border-white text-white px-10 py-5 rounded-full text-lg font-medium hover:bg-white/10">Contact Acharya</Link>
           </div>
         </motion.div>
