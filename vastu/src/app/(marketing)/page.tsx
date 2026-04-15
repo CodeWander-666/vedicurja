@@ -1,9 +1,21 @@
 'use client';
-import Header from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
-import SmoothScroll from '@/components/global/ScrollSmoother';
 import { LuxuryCursor } from '@/components/global/LuxuryCursor';
 import { SoundController } from '@/components/global/SoundController';
+import Header from '@/components/layout/Header';
+import SmoothScroll from '@/components/global/ScrollSmoother';
+
+import { CosmicHero } from '@/components/sections/home/CosmicHero';
+import { AcharyaVow } from '@/components/sections/home/AcharyaVow';
+import { FreeAITools } from '@/components/sections/home/FreeAITools';
+import { SacredServices } from '@/components/sections/home/SacredServices';
+import { GlobalTrust } from '@/components/sections/home/GlobalTrust';
+import { WordsOfGratitude } from '@/components/sections/home/WordsOfGratitude';
+import { LearnVastuTeaser } from '@/components/sections/home/LearnVastuTeaser';
+import { VirtualConsultCTA } from '@/components/sections/home/VirtualConsultCTA';
+import { SacredArchives } from '@/components/sections/home/SacredArchives';
+import { LineageTimeline } from '@/components/sections/home/LineageTimeline';
+import { GlobalPresence } from '@/components/sections/home/GlobalPresence';
+import { FinalCTA } from '@/components/sections/home/FinalCTA';
 
 export default function HomePage() {
   return (
@@ -12,12 +24,20 @@ export default function HomePage() {
       <SoundController />
       <Header />
       <SmoothScroll>
-        <main className="relative z-10 pt-32 pb-20 min-h-screen bg-vastu-parchment">
-          <div className="container mx-auto px-6">
-            <h1 className="font-serif text-5xl text-center text-nidra-indigo mb-6">Ancient Wisdom. Modern Precision.</h1><p className="text-center text-nidra-indigo/70">Guided by Acharya, rooted in sacred geometry.</p>
-          </div>
+        <main className="relative bg-vastu-parchment">
+          <CosmicHero />
+          <AcharyaVow />
+          <FreeAITools />
+          <SacredServices />
+          <GlobalTrust />
+          <WordsOfGratitude />
+          <LearnVastuTeaser />
+          <VirtualConsultCTA />
+          <SacredArchives />
+          <LineageTimeline />
+          <GlobalPresence />
+          <FinalCTA />
         </main>
-        <Footer />
       </SmoothScroll>
     </>
   );

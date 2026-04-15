@@ -1,0 +1,54 @@
+'use client';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import Link from 'next/link';
+import { Bookshelf3D } from '@/components/learn/Bookshelf3D';
+import { useRealtimeContent } from '@/hooks/useRealtimeContent';
+
+interface HomeSection {
+  section_key: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  button_text: string;
+  button_link: string;
+  is_published: boolean;
+}
+
+const fallbackData: HomeSection = {
+  section_key: 'learn_vastu',
+  title: 'Master the Sacred Sciences',
+  subtitle: 'Interactive 3D Bookshelf',
+  description: 'Explore our library of ancient Vastu and numerology texts.',
+  button_text: 'Browse All Courses',
+  button_link: '/learn-vastu',
+  is_published: true,
+};
+
+export function LearnVastuTeaser() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
+  const { items } = useRealtimeContent<HomeSection>('home_sections', 'order_index');
+  const data = items.find(item => item.section_key === 'learn_vastu') || fallbackData;
+
+  if (!data.is_published) return null;
+
+  return (
+    <motion.section ref={ref} style={{ y }} className="py-24 md:py-32 bg-vastu-stone/20">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-12">
+          <h2 className="font-serif text-4xl md:text-5xl text-nidra-indigo mb-4">{data.title}</h2>
+          <p className="text-nidra-indigo/60 max-w-2xl mx-auto">{data.description}</p>
+        </div>
+        <Bookshelf3D />
+        <div className="flex justify-center gap-6 mt-12">
+          <Link href={data.button_link || "#" || '#'} className="luxury-button">{data.button_text}</Link>
+          <Link href="/dashboard/library" className="border-2 border-prakash-gold text-nidra-indigo px-8 py-4 rounded-full font-medium">My Library</Link>
+        </div>
+      </div>
+    </motion.section>
+  );
+}
+export default LearnVastuTeaser;

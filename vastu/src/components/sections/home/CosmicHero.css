@@ -1,0 +1,45 @@
+.mandala-3d {
+  position: relative;
+  width: min(80vw, 800px);
+  height: min(80vw, 800px);
+  transform-style: preserve-3d;
+  animation: float 8s ease-in-out infinite;
+}
+.mandala-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(232, 185, 96, 0.3);
+  box-shadow: 0 0 30px rgba(200, 138, 93, 0.2), inset 0 0 20px rgba(232, 185, 96, 0.1);
+}
+.ring1 { transform: rotateX(20deg) rotateY(10deg); }
+.ring2 { transform: rotateX(40deg) rotateY(30deg) scale(0.8); border-color: rgba(193, 0, 0, 0.2); }
+.ring3 { transform: rotateX(60deg) rotateY(50deg) scale(0.6); border-color: rgba(255, 153, 51, 0.2); }
+.mandala-core {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) translateZ(30px);
+  font-size: 5rem;
+  color: #E8B960;
+  text-shadow: 0 0 30px #C88A5D;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0) rotateX(5deg) rotateY(0deg); }
+  50% { transform: translateY(-20px) rotateX(10deg) rotateY(5deg); }
+}
+.particles-container { position: absolute; inset: 0; }
+.particle {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: #E8B960;
+  border-radius: 50%;
+  filter: blur(2px);
+  animation: twinkle 4s infinite alternate;
+}
+/* Position particles randomly via JS – we'll use CSS custom properties in component */
+@keyframes twinkle {
+  0% { opacity: 0.2; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.5); }
+}
+.scroll-indicator span { animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }

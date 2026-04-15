@@ -1,4 +1,5 @@
 'use client';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -26,6 +27,7 @@ export default function Header() {
           ))}
         </nav>
         <div className="flex items-center gap-3">
+          <LanguageSwitcher />
           <Link href="/signin" className="text-sm text-nidra-indigo/80 hover:text-sacred-saffron">Sign In</Link>
           <Link href="/contact" className="luxury-button !py-2 !px-5 text-sm">{t('common.consult')}</Link>
         </div>

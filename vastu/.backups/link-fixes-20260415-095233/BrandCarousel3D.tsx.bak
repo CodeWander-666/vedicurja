@@ -1,0 +1,2 @@
+'use client'; export function BrandCarousel3D() { return (<section className="py-16 bg-white/40 backdrop-blur-sm border-y border-[#C88A5D]/10"><div className="container mx-auto px-6"><h2 className="text-center font-serif text-3xl text-[#1A2A3A] mb-8">Trusted by Global Publications</h2><div className="flex flex-wrap justify-center gap-8">{['Mahindra','TCS','Adani','Times of India'].map(b=><span key={b} className="font-serif text-2xl text-[#1A2A3A]/40">{b}</span>)}</div></div></section>); }
+export default BrandCarousel3D;

@@ -29,7 +29,7 @@ export function CourseCards() {
             <p className="text-sm text-[#1A2A3A]/60 mb-4">{course.description}</p>
             <div className="flex items-center justify-between">
               <span className="text-xs">{course.modules} modules</span>
-              <Link href={`/courses/course?slug=${course.slug}`} onClick={() => play('clickPrimary')} className="bg-[#C88A5D] text-white px-4 py-2 rounded-full text-sm">Enroll</Link>
+              <Link href={`/courses/course?slug=${course.slug || '#'}` || '#'} onClick={() => play('clickPrimary')} className="bg-[#C88A5D] text-white px-4 py-2 rounded-full text-sm">Enroll</Link>
             </div>
           </div>
         </motion.div>

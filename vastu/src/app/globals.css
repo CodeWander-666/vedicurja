@@ -25,3 +25,13 @@
     @apply inline-flex items-center justify-center bg-gradient-to-r from-sacred-saffron via-kumkuma-red to-prakash-gold text-white font-medium py-4 px-8 rounded-full shadow-luxury-md hover:shadow-luxury-lg transition-all;
   }
 }
+
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin 20s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+}

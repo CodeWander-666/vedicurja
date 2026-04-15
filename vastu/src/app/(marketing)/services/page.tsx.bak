@@ -1,0 +1,351 @@
+'use client';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import Link from 'next/link';
+import Header from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import SmoothScroll from '@/components/global/ScrollSmoother';
+import { LuxuryCursor } from '@/components/global/LuxuryCursor';
+import { SoundController } from '@/components/global/SoundController';
+import { MagneticButton } from '@/components/global/MagneticButton';
+import AnimatedText, { GradientText } from '@/components/ui/AnimatedText';
+import Mandala3D from '@/components/svg/Mandala3D';
+import FloatingParticles from '@/components/svg/FloatingParticles';
+import VastuGrid from '@/components/svg/VastuGrid';
+import ServiceCard3DEnhanced from '@/components/services/ServiceCard3DEnhanced';
+import VideoPlaceholder from '@/components/services/VideoPlaceholder';
+import { useRealtimeContent } from '@/hooks/useRealtimeContent';
+import { Service } from '@/types/admin';
+
+// ----------------------------------------------------------------------
+// Service categories with placeholder images
+// ----------------------------------------------------------------------
+const serviceCategories = [
+  {
+    title: 'Residential Vastu',
+    description: 'Harmonise your home for peace, health, and prosperity.',
+    icon: '🏡',
+    benefits: ['Better sleep', 'Family harmony', 'Financial flow'],
+    href: '/services/residential',
+    gradient: 'linear-gradient(145deg, #FDFBF7 0%, #E8B960 100%)',
+    image: '/images/services/residential.jpg',
+  },
+  {
+    title: 'Commercial Vastu',
+    description: 'Align your business for unprecedented growth.',
+    icon: '🏢',
+    benefits: ['Revenue increase', 'Team cohesion', 'Client retention'],
+    href: '/services/commercial',
+    gradient: 'linear-gradient(145deg, #FDFBF7 0%, #C88A5D 100%)',
+    image: '/images/services/commercial.jpg',
+  },
+  {
+    title: 'Industrial Vastu',
+    description: 'Optimise factories and warehouses for safety and productivity.',
+    icon: '🏭',
+    benefits: ['Reduced downtime', 'Worker safety', 'Output increase'],
+    href: '/services/industrial',
+    gradient: 'linear-gradient(145deg, #FDFBF7 0%, #A06A3D 100%)',
+    image: '/images/services/industrial.jpg',
+  },
+  {
+    title: 'Land Selection',
+    description: 'Auspicious plot analysis using Vedic parameters.',
+    icon: '🌍',
+    benefits: ['Ideal orientation', 'Soil analysis', 'Future prospects'],
+    href: '/services/land',
+    gradient: 'linear-gradient(145deg, #FDFBF7 0%, #D4A373 100%)',
+    image: '/images/services/land.jpg',
+  },
+  {
+    title: 'Spiritual Spaces',
+    description: 'Design temples, meditation halls, and yoga studios.',
+    icon: '🕉️',
+    benefits: ['Energy amplification', 'Sacred geometry', 'Peaceful vibration'],
+    href: '/services/spiritual',
+    gradient: 'linear-gradient(145deg, #FDFBF7 0%, #FF9933 100%)',
+    image: '/images/services/spiritual.jpg',
+  },
+  {
+    title: 'Geopathic Stress',
+    description: 'Detect and neutralise harmful earth energies.',
+    icon: '📡',
+    benefits: ['EMF correction', 'Health improvement', 'Sleep quality'],
+    href: '/services/geopathic',
+    gradient: 'linear-gradient(145deg, #FDFBF7 0%, #8B5A2B 100%)',
+    image: '/images/services/geopathic.jpg',
+  },
+];
+
+// ----------------------------------------------------------------------
+// Section 1: Hero
+// ----------------------------------------------------------------------
+function HeroSection() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  return (
+    <motion.section ref={ref} style={{ opacity }} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-vastu-parchment via-white to-vastu-parchment">
+      <Mandala3D />
+      <FloatingParticles />
+      <motion.div style={{ y }} className="container mx-auto px-6 relative z-10 text-center">
+        <motion.span initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-sacred-saffron uppercase tracking-[0.3em] text-sm mb-4 block">
+          Sacred Services
+        </motion.span>
+        <AnimatedText text="Complete Vastu Solutions" className="font-serif text-5xl md:text-7xl lg:text-8xl text-nidra-indigo mb-4" />
+        <GradientText text="For Modern Living" className="font-serif text-5xl md:text-7xl lg:text-8xl mb-6 block" />
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="text-lg md:text-xl text-nidra-indigo/70 max-w-2xl mx-auto mb-10">
+          From residential sanctuaries to commercial empires — experience the transformative power of authentic Vastu Shastra.
+        </motion.p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="flex flex-col sm:flex-row gap-4 justify-center">
+          <MagneticButton className="luxury-button">
+            <Link href="/contact">Consult Acharya</Link>
+          </MagneticButton>
+          <MagneticButton className="bg-transparent border-2 border-prakash-gold text-nidra-indigo hover:bg-prakash-gold/10 px-8 py-4 rounded-full">
+            <button onClick={() => document.getElementById('service-grid')?.scrollIntoView({ behavior: 'smooth' })}>
+              Explore Services
+            </button>
+          </MagneticButton>
+        </motion.div>
+      </motion.div>
+    </motion.section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 2: The VedicUrja Difference (Video)
+// ----------------------------------------------------------------------
+function DifferenceSection() {
+  return (
+    <section className="py-24 bg-white">
+      <div className="container mx-auto px-6 max-w-6xl">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <AnimatedText text="Why Choose VedicUrja?" className="font-serif text-4xl text-nidra-indigo mb-6" />
+            <p className="text-lg text-nidra-indigo/70 mb-6">
+              With over four decades of authentic lineage, we blend ancient Vedic wisdom with modern precision to transform spaces and lives globally.
+            </p>
+            <ul className="space-y-3">
+              <li className="flex items-center gap-3"><span className="text-prakash-gold text-xl">✓</span> 4th Generation Acharya</li>
+              <li className="flex items-center gap-3"><span className="text-prakash-gold text-xl">✓</span> 500+ Transformations</li>
+              <li className="flex items-center gap-3"><span className="text-prakash-gold text-xl">✓</span> 15+ Countries Served</li>
+            </ul>
+          </div>
+          <VideoPlaceholder poster="/images/services/vastu-intro-poster.jpg" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 3: Service Categories Grid
+// ----------------------------------------------------------------------
+function ServiceGridSection() {
+  return (
+    <section id="service-grid" className="py-24 bg-vastu-stone/20">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <AnimatedText text="Complete Vastu Solutions" className="font-serif text-4xl md:text-5xl text-nidra-indigo mb-4" />
+          <p className="text-nidra-indigo/60 max-w-2xl mx-auto">Every niche, every scale — our expertise covers the entire spectrum of Vedic architecture</p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto place-items-center">
+          {serviceCategories.map((service, i) => (
+            <motion.div
+              key={service.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="w-full flex justify-center"
+            >
+              <ServiceCard3DEnhanced {...service} colorGradient={service.gradient} imagePlaceholder={service.image} />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 4: Virtual Consultation Promo
+// ----------------------------------------------------------------------
+function VirtualConsultSection() {
+  return (
+    <section className="py-24 bg-gradient-to-r from-nidra-indigo to-nidra-indigo/90 text-white">
+      <div className="container mx-auto px-6 text-center max-w-4xl">
+        <AnimatedText text="Can't Visit in Person?" className="font-serif text-4xl md:text-5xl mb-6 text-white" />
+        <p className="text-xl text-white/80 mb-10">
+          Experience the same depth of Vastu guidance through our secure virtual consultations. Screen sharing, detailed analysis, and personalised remedies — all online.
+        </p>
+        <Link href="/bookings" className="bg-prakash-gold hover:bg-sacred-saffron text-nidra-indigo font-bold px-10 py-5 rounded-full text-lg transition inline-block">
+          Book Virtual Consult
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 5: The Process
+// ----------------------------------------------------------------------
+function ProcessSection() {
+  const steps = [
+    { title: 'Discovery', desc: 'Share your space details and concerns.' },
+    { title: 'Vedic Analysis', desc: 'Deep audit using floor plans and birth charts.' },
+    { title: 'Personalised Report', desc: 'Non‑destructive remedies delivered.' },
+    { title: 'Implementation', desc: 'Guidance to apply corrections.' },
+    { title: 'Transformation', desc: 'Witness positive shifts.' },
+  ];
+  return (
+    <section className="py-24 bg-white">
+      <div className="container mx-auto px-6">
+        <AnimatedText text="The VedicUrja Process" className="font-serif text-4xl text-center text-nidra-indigo mb-16" />
+        <div className="flex flex-wrap justify-center gap-8 max-w-5xl mx-auto">
+          {steps.map((step, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="text-center w-40"
+            >
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-prakash-gold/20 flex items-center justify-center text-2xl font-bold text-nidra-indigo">
+                {i + 1}
+              </div>
+              <h4 className="font-serif text-lg text-nidra-indigo mb-1">{step.title}</h4>
+              <p className="text-xs text-nidra-indigo/60">{step.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 6: Offline Consultation (In-Person)
+// ----------------------------------------------------------------------
+function OfflineConsultSection() {
+  return (
+    <section className="py-24 bg-vastu-parchment">
+      <div className="container mx-auto px-6 max-w-6xl">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="order-2 md:order-1">
+            <img src="/images/services/offline-consult.jpg" alt="In-person consultation" className="rounded-3xl shadow-2xl" />
+          </div>
+          <div className="order-1 md:order-2">
+            <AnimatedText text="Prefer an In‑Person Visit?" className="font-serif text-4xl text-nidra-indigo mb-6" />
+            <p className="text-lg text-nidra-indigo/70 mb-6">
+              For clients in India, Acharya offers on‑site Vastu audits. Experience the energy of your space firsthand with a personal walkthrough.
+            </p>
+            <Link href="/contact" className="luxury-button inline-block">Request On‑Site Visit</Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 7: Testimonials
+// ----------------------------------------------------------------------
+function TestimonialsSection() {
+  return (
+    <section className="py-24 bg-white overflow-hidden">
+      <div className="container mx-auto px-6">
+        <AnimatedText text="Trusted by Visionaries" className="font-serif text-4xl text-center text-nidra-indigo mb-4" />
+        <p className="text-center text-nidra-indigo/60 mb-12">Hear from clients who have experienced transformation</p>
+        {/* TestimonialsSlider would go here */}
+        <div className="grid md:grid-cols-3 gap-6">
+          {[1,2,3].map(i => (
+            <div key={i} className="bg-vastu-stone/20 p-6 rounded-2xl">
+              <p className="italic mb-4">"Acharya's guidance transformed our home and business."</p>
+              <p className="font-medium">— Client {i}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 8: FAQ
+// ----------------------------------------------------------------------
+function FAQSection() {
+  const faqs = [
+    { q: 'How long does a consultation take?', a: 'Typically 60-90 minutes for residential, 2 hours for commercial.' },
+    { q: 'Do I need to be present for virtual consultation?', a: 'Yes, you'll screen share your floor plan and walk us through your space.' },
+    { q: 'Are remedies destructive?', a: 'No. We focus on simple, non‑invasive corrections.' },
+  ];
+  return (
+    <section className="py-20 bg-vastu-stone/20">
+      <div className="container mx-auto px-6 max-w-3xl">
+        <AnimatedText text="Frequently Asked Questions" className="font-serif text-3xl text-center text-nidra-indigo mb-8" />
+        <div className="space-y-4">
+          {faqs.map((f, i) => (
+            <details key={i} className="bg-white p-4 rounded-xl">
+              <summary className="font-medium cursor-pointer">{f.q}</summary>
+              <p className="mt-2 text-nidra-indigo/70">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 9: Final CTA
+// ----------------------------------------------------------------------
+function FinalCTA() {
+  return (
+    <section className="relative py-32 bg-nidra-indigo text-white text-center overflow-hidden">
+      <Mandala3D />
+      <div className="container mx-auto px-6 relative z-10">
+        <AnimatedText text="Ready to Transform Your Space?" className="font-serif text-4xl md:text-6xl mb-6 text-white" />
+        <p className="text-xl text-white/80 max-w-3xl mx-auto mb-10">
+          Book a private consultation with Acharya and begin your journey today.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/contact" className="bg-prakash-gold hover:bg-sacred-saffron text-nidra-indigo font-bold px-10 py-5 rounded-full text-lg">
+            Schedule Consultation
+          </Link>
+          <Link href="/free-tools" className="border-2 border-white text-white px-10 py-5 rounded-full text-lg hover:bg-white/10">
+            Try Free AI Tools
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// Main Page
+// -----------------------------------------------------------------------------
+export default function ServicesPage() {
+  return (
+    <>
+      <LuxuryCursor />
+      <SoundController />
+      <Header />
+      <SmoothScroll>
+        <main className="relative bg-vastu-parchment">
+          <HeroSection />
+          <DifferenceSection />
+          <ServiceGridSection />
+          <VirtualConsultSection />
+          <ProcessSection />
+          <OfflineConsultSection />
+          <TestimonialsSection />
+          <FAQSection />
+          <FinalCTA />
+        </main>
+        <Footer />
+      </SmoothScroll>
+    </>
+  );
+}

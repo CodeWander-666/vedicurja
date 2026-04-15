@@ -1,0 +1,138 @@
+
+[0;34m▶ Cleaning previous build artifacts[0m
+[0;34m[INFO][0m  Removing .next directory...
+[0;34m[INFO][0m  Clearing npm cache...
+[0;32m[OK][0m    Cleanup complete.
+
+[0;34m▶ Restoring root layout to clean state[0m
+[0;34m[INFO][0m  Backed up: src/app/layout.tsx
+[0;32m[OK][0m    Root layout restored to pristine state.
+
+[0;34m▶ Creating GlobalLoader component[0m
+[0;32m[OK][0m    GlobalLoader component created.
+
+[0;34m▶ Creating root loading.tsx[0m
+[0;32m[OK][0m    Root loading.tsx created.
+
+[0;34m▶ Adding loading.tsx to key routes[0m
+[0;32m[OK][0m    Added loading.tsx to src/app/(marketing)/bookings
+[0;32m[OK][0m    Added loading.tsx to src/app/(marketing)/insights
+[0;32m[OK][0m    Added loading.tsx to src/app/(marketing)/learn-vastu
+[0;32m[OK][0m    Added loading.tsx to src/app/(marketing)/free-tools
+[0;32m[OK][0m    Added loading.tsx to src/app/(dashboard)/dashboard
+[0;32m[OK][0m    Added loading.tsx to src/app/(dashboard)/dashboard/library
+[0;32m[OK][0m    Added loading.tsx to src/app/(admin)/admin
+
+[0;34m▶ Updating AuthGateway with GlobalLoader[0m
+[0;34m[INFO][0m  Backed up: src/components/auth/AuthGateway.tsx
+[0;32m[OK][0m    AuthGateway updated.
+
+[0;34m▶ Restoring corrupted pages to clean state[0m
+[0;34m[INFO][0m  Backed up: src/app/(marketing)/courses/course/page.tsx
+[0;32m[OK][0m    Course page restored.
+[0;34m[INFO][0m  Backed up: src/app/(marketing)/payment/status/page.tsx
+[0;32m[OK][0m    Payment status page restored.
+
+[0;34m▶ Cleaning and rebuilding[0m
+[0;34m[INFO][0m  Removing .next directory...
+[0;34m[INFO][0m  Running TypeScript check...
+[0;32m[OK][0m    TypeScript check passed.
+[0;34m[INFO][0m  Running production build...
+
+> vastu-global-platform@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.25
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/44) ...
+   Generating static pages (11/44) 
+   Generating static pages (22/44) 
+   Generating static pages (33/44) 
+ ✓ Generating static pages (44/44)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    9.01 kB         235 kB
+├ ○ /_not-found                          152 B          87.7 kB
+├ ○ /about                               1.97 kB         150 kB
+├ ○ /admin                               5.37 kB         211 kB
+├ ○ /book                                1.97 kB         150 kB
+├ ○ /bookings                            91.6 kB         301 kB
+├ ○ /client-stories                      13.9 kB         161 kB
+├ ○ /client-stories/story                1.97 kB         150 kB
+├ ○ /contact                             2.07 kB         150 kB
+├ ○ /courses                             2.03 kB         150 kB
+├ ○ /courses/course                      3.31 kB         147 kB
+├ ○ /dashboard                           4.09 kB         220 kB
+├ ○ /dashboard/account                   4.09 kB         220 kB
+├ ○ /dashboard/billing                   1.97 kB         150 kB
+├ ○ /dashboard/connected                 1.97 kB         150 kB
+├ ○ /dashboard/consultations             1.97 kB         150 kB
+├ ○ /dashboard/library                   4.62 kB         217 kB
+├ ○ /dashboard/meeting                   1.97 kB         150 kB
+├ ○ /dashboard/notifications             1.97 kB         150 kB
+├ ○ /dashboard/privacy                   1.97 kB         150 kB
+├ ○ /dashboard/security                  1.97 kB         150 kB
+├ ○ /free-tools                          4.39 kB         226 kB
+├ ○ /free-tools/kundali                  7.51 kB         217 kB
+├ ○ /free-tools/name-suggestion          5.62 kB         215 kB
+├ ○ /free-tools/vastu-scan               22.5 kB         232 kB
+├ ○ /insights                            6 kB            215 kB
+├ ○ /insights/post                       3.63 kB         213 kB
+├ ○ /learn-vastu                         8.24 kB         218 kB
+├ ○ /library                             1.97 kB         150 kB
+├ ○ /library/book                        1.97 kB         150 kB
+├ ○ /payment/status                      3.42 kB         147 kB
+├ ○ /post                                1.97 kB         150 kB
+├ ○ /privacy                             2.46 kB         150 kB
+├ ○ /service                             1.97 kB         150 kB
+├ ○ /services                            2.1 kB          150 kB
+├ ○ /services/service                    1.98 kB         150 kB
+├ ○ /signin                              3.93 kB         209 kB
+├ ○ /signup                              3.97 kB         209 kB
+├ ○ /story                               1.97 kB         150 kB
+├ ○ /terms                               2.59 kB         150 kB
+├ ○ /vastu-consultant                    1.98 kB         150 kB
+└ ○ /vastu-consultant-[city]             1.98 kB         150 kB
++ First Load JS shared by all            87.5 kB
+  ├ chunks/2117-850338e388b44512.js      31.9 kB
+  ├ chunks/fd9d1056-3d5a6f7dc10fe63b.js  53.6 kB
+  └ other shared chunks (total)          2.04 kB
+
+
+○  (Static)  prerendered as static content
+
+[0;32m[OK][0m    ✅ Build successful!
+
+[0;32m[OK][0m    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[0;32m[OK][0m    🎉 VedicUrja Luxury Loader Implementation Complete!
+[0;32m[OK][0m    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[0;34m[INFO][0m  What was implemented:
+[0;34m[INFO][0m    ✓ GlobalLoader component with 3D mandala animation
+[0;34m[INFO][0m    ✓ Root loading.tsx (Next.js App Router convention)
+[0;34m[INFO][0m    ✓ loading.tsx in key route segments
+[0;34m[INFO][0m    ✓ AuthGateway spinner replaced
+[0;34m[INFO][0m    ✓ Corrupted pages restored to clean state
+[0;34m[INFO][0m    ✓ Root layout kept pristine (Server Component)
+
+[0;34m[INFO][0m  How to test:
+[0;34m[INFO][0m    1. Run 'npm run dev'
+[0;34m[INFO][0m    2. Navigate between pages – the loader appears during transitions
+[0;34m[INFO][0m    3. On initial page load, the loader shows via suspense boundaries
+
+[0;34m[INFO][0m  📁 Backups stored in: .backups/loader-20260415-161032
+[0;34m[INFO][0m  📄 Full log saved to: loader-implementation-20260415-161032.log
+
+[0;32m[OK][0m    VedicUrja is production‑ready. Enjoy the luxury experience!

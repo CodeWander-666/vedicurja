@@ -1,0 +1,30 @@
+'use client';
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Header from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import SmoothScroll from '@/components/global/ScrollSmoother';
+
+function PostContent() {
+  const searchParams = useSearchParams();
+  const slug = searchParams.get('slug');
+  return <div className="text-center">Post: {slug}</div>;
+}
+
+export default function PostPage() {
+  return (
+    <>
+      <Header />
+      <SmoothScroll>
+        <main className="relative z-10 pt-32 pb-20 min-h-screen bg-vastu-parchment">
+          <div className="container mx-auto px-6">
+            <Suspense fallback={<div>Loading...</div>}>
+              <PostContent />
+            </Suspense>
+          </div>
+        </main>
+        <Footer />
+      </SmoothScroll>
+    </>
+  );
+}

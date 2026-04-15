@@ -3,7 +3,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 import SmoothScroll from '@/components/global/ScrollSmoother';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -66,7 +65,6 @@ export default function SignInPage() {
             </p>
           </div>
         </main>
-        <Footer />
       </SmoothScroll>
     </>
   );

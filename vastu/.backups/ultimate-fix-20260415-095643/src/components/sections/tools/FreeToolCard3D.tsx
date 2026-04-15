@@ -1,0 +1,207 @@
+'use client';
+import { motion } from 'framer-motion';
+import { useSound } from '@/hooks/useSound';
+import Link from 'next/link';
+
+interface FreeToolCard3DProps {
+  name: string;
+  description: string;
+  icon: string;
+  href: string;
+  color: string; // base color like '#FF9933'
+}
+
+export function FreeToolCard3D({
+  name,
+  description,
+  icon,
+  href,
+  color,
+}: FreeToolCard3DProps) {
+  const { play, playSpatial } = useSound();
+
+  // Generate a complementary gradient from the base color
+  const gradient = `linear-gradient(145deg, ${color}20 0%, ${color}40 100%)`;
+
+  return (
+    <div
+      className="parent group"
+      onMouseEnter={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        playSpatial(
+          'hoverCard',
+          (rect.left + rect.width / 2) / window.innerWidth,
+          (rect.top + rect.height / 2) / window.innerHeight
+        );
+      }}
+      onClick={() => play('cardExpand')}
+    >
+      <div className="card" style={{ background: gradient }}>
+        <div className="glass"></div>
+        <div className="content">
+          <span className="tool-icon">{icon}</span>
+          <span className="title">{name}</span>
+          <span className="text">{description}</span>
+        </div>
+        <div className="bottom">
+          <Link href={href || "#"} className="try-button">
+            Try Now →
+          </Link>
+        </div>
+        {/* Floating decorative rings */}
+        <div className="rings">
+          <span className="ring ring1" style={{ borderColor: color }}></span>
+          <span className="ring ring2" style={{ borderColor: color }}></span>
+          <span className="ring ring3" style={{ borderColor: color }}></span>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .parent {
+          width: 100%;
+          max-width: 320px;
+          height: 400px;
+          perspective: 1200px;
+          margin: 0 auto;
+        }
+        .card {
+          height: 100%;
+          border-radius: 50px;
+          background: ${gradient};
+          transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+          transform-style: preserve-3d;
+          box-shadow: 
+            0 25px 35px -12px rgba(26, 42, 58, 0.2),
+            0 0 0 1px rgba(232, 185, 96, 0.3) inset,
+            0 0 20px rgba(232, 185, 96, 0.1);
+          position: relative;
+          display: flex;
+          flex-direction: column;
+        }
+        .group:hover .card {
+          transform: rotate3d(0.3, 0.7, 0.1, 15deg) translateY(-8px);
+          box-shadow: 
+            0 45px 55px -18px rgba(200, 138, 93, 0.4),
+            0 0 0 2px rgba(232, 185, 96, 0.5) inset,
+            0 0 35px rgba(232, 185, 96, 0.25);
+        }
+        .glass {
+          position: absolute;
+          inset: 8px;
+          border-radius: 45px;
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.5) 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0.4) 100%
+          );
+          backdrop-filter: blur(6px);
+          transform: translate3d(0, 0, 25px);
+          border-left: 1.5px solid rgba(255, 255, 255, 0.8);
+          border-bottom: 1.5px solid rgba(255, 255, 255, 0.6);
+          box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.4);
+        }
+        .content {
+          padding: 100px 25px 0 25px;
+          transform: translate3d(0, 0, 28px);
+          text-align: center;
+          flex: 1;
+        }
+        .tool-icon {
+          font-size: 56px;
+          display: block;
+          margin-bottom: 20px;
+          filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.15));
+          transform: translateZ(10px);
+        }
+        .title {
+          display: block;
+          color: #1a2a3a;
+          font-weight: 800;
+          font-size: 26px;
+          font-family: var(--font-cormorant), serif;
+          margin-bottom: 12px;
+          letter-spacing: -0.02em;
+          text-shadow: 0 2px 4px rgba(255, 255, 255, 0.6);
+        }
+        .text {
+          display: block;
+          color: rgba(26, 42, 58, 0.8);
+          font-size: 15px;
+          line-height: 1.5;
+          font-weight: 500;
+        }
+        .bottom {
+          padding: 25px;
+          transform: translate3d(0, 0, 28px);
+          text-align: center;
+        }
+        .try-button {
+          display: inline-block;
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(4px);
+          padding: 12px 28px;
+          border-radius: 40px;
+          font-weight: 700;
+          color: #1a2a3a;
+          text-decoration: none;
+          border: 1px solid rgba(232, 185, 96, 0.6);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05), inset 0 1px 3px white;
+          transition: all 0.3s;
+        }
+        .try-button:hover {
+          background: white;
+          box-shadow: 0 10px 20px rgba(200, 138, 93, 0.2);
+          transform: scale(1.02);
+        }
+        .rings {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+        .ring {
+          position: absolute;
+          border-radius: 50%;
+          border: 1.5px solid;
+          opacity: 0.3;
+          transform-style: preserve-3d;
+          transition: all 0.6s;
+        }
+        .ring1 {
+          width: 120px;
+          height: 120px;
+          top: -20px;
+          right: -20px;
+          transform: translate3d(0, 0, 15px);
+        }
+        .ring2 {
+          width: 80px;
+          height: 80px;
+          bottom: 30px;
+          left: -15px;
+          transform: translate3d(0, 0, 35px);
+        }
+        .ring3 {
+          width: 160px;
+          height: 160px;
+          bottom: -30px;
+          right: -30px;
+          transform: translate3d(0, 0, 55px);
+        }
+        .group:hover .ring1 {
+          transform: translate3d(0, 0, 35px);
+          opacity: 0.5;
+        }
+        .group:hover .ring2 {
+          transform: translate3d(0, 0, 55px);
+          opacity: 0.5;
+        }
+        .group:hover .ring3 {
+          transform: translate3d(0, 0, 75px);
+          opacity: 0.5;
+        }
+      `}</style>
+    </div>
+  );
+}
+export default FreeToolCard3D;

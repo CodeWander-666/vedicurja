@@ -20,7 +20,7 @@ export function CourseCard({ course, index }: CourseCardProps) {
       whileHover={{ y: -8 }}
       className="group bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#C88A5D]/10 hover:border-[#C88A5D]/30 transition-all shadow-md hover:shadow-xl"
     >
-      <Link href={`/courses/course?slug=${course.slug}`} onClick={() => play('clickPrimary')} className="block">
+      <Link href={`/courses/course?slug=${course.slug || '#'}` || '#'} onClick={() => play('clickPrimary')} className="block">
         <div className="h-2" style={{ backgroundColor: index === 0 ? '#C88A5D' : index === 1 ? '#8B5A2B' : index === 2 ? '#1985A1' : '#9A4C95' }} />
         <div className="p-6">
           <div className="flex items-center justify-between mb-3">

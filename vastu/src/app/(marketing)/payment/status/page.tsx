@@ -3,7 +3,6 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 import SmoothScroll from '@/components/global/ScrollSmoother';
 
 function StatusContent() {
@@ -23,14 +22,13 @@ export default function PaymentStatusPage() {
     <>
       <Header />
       <SmoothScroll>
-        <main className="pt-32 pb-20 px-6 min-h-screen bg-vastu-parchment">
+        <main className="pt-32 pb-20 min-h-screen bg-vastu-parchment">
           <div className="max-w-lg mx-auto">
             <Suspense fallback={<div>Loading...</div>}>
               <StatusContent />
             </Suspense>
           </div>
         </main>
-        <Footer />
       </SmoothScroll>
     </>
   );

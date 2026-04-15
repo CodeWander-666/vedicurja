@@ -1,0 +1,174 @@
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '@/lib/supabaseClient';
+
+// JaaS configuration
+const JAAS_APP_ID = 'vpaas-magic-cookie-a4bbf7e13b3f46b1844c01891e900ac4';
+const JAAS_DOMAIN = '8x8.vc';
+
+interface MeetingRoomProps {
+  consultationId: string;
+  scheduledAt: string;
+  status: string;
+  meetingUrl: string | null;
+  onMeetingEnd?: () => void;
+}
+
+export default function MeetingRoom({
+  consultationId,
+  scheduledAt,
+  status,
+  meetingUrl,
+  onMeetingEnd,
+}: MeetingRoomProps) {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [countdown, setCountdown] = useState<string>('');
+  const [showIframe, setShowIframe] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout>();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Extract room name from URL or generate fallback
+  const roomName = meetingUrl?.split('/').pop() || `${JAAS_APP_ID}/VedicUrja-${consultationId}`;
+  const jitsiUrl = `https://${JAAS_DOMAIN}/${roomName}`;
+
+  // Jitsi meet configuration for white‑label
+  const jitsiConfig = {
+    configOverwrite: {
+      startWithAudioMuted: false,
+      startWithVideoMuted: true,
+      prejoinPageEnabled: false,
+      disableDeepLinking: true,
+      brandingDataUrl: 'https://vedicurja.com/branding.json', // Optional
+    },
+    interfaceConfigOverwrite: {
+      DEFAULT_BACKGROUND: '#1A2A3A',
+      DEFAULT_LOGO_URL: 'https://vedicurja.com/logo.svg',
+      BRAND_WATERMARK_LINK: 'https://vedicurja.com',
+      SHOW_JITSI_WATERMARK: false,
+      SHOW_BRAND_WATERMARK: true,
+      BRAND_WATERMARK_TEXT: 'VedicUrja',
+      TOOLBAR_BUTTONS: ['microphone', 'camera', 'desktop', 'chat', 'raisehand', 'tileview'],
+      PROVIDER_NAME: 'VedicUrja',
+      DISABLE_VIDEO_BACKGROUND: true,
+    },
+  };
+
+  // Build the iframe URL with config parameters
+  const configParam = encodeURIComponent(JSON.stringify(jitsiConfig));
+  const fullJitsiUrl = `${jitsiUrl}#config=${configParam}`;
+
+  useEffect(() => {
+    const checkAccess = () => {
+      const now = new Date();
+      const scheduled = new Date(scheduledAt);
+      const diff = scheduled.getTime() - now.getTime();
+      const tenMinutes = 10 * 60 * 1000;
+      const unlocked = (status === 'scheduled' || status === 'in_progress') && diff < tenMinutes;
+      setIsUnlocked(unlocked);
+      if (!unlocked && diff > 0) {
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        setCountdown(`${hours}h ${minutes}m ${seconds}s`);
+      } else if (!unlocked) {
+        setCountdown('Meeting not available');
+      }
+    };
+    checkAccess();
+    timerRef.current = setInterval(checkAccess, 1000);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [scheduledAt, status]);
+
+  const handleJoin = () => {
+    if (isUnlocked) {
+      setShowIframe(true);
+      supabase.from('consultations').update({ status: 'in_progress' }).eq('id', consultationId);
+    }
+  };
+
+  const handleLeave = () => {
+    setShowIframe(false);
+    if (onMeetingEnd) onMeetingEnd();
+  };
+
+  return (
+    <div className="relative w-full rounded-3xl backdrop-blur-sm bg-white/40 shadow-2xl border border-prakash-gold/40 overflow-hidden">
+      <AnimatePresence mode="wait">
+        {!showIframe ? (
+          <motion.div
+            key="lock"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="aspect-video flex flex-col items-center justify-center p-8 bg-gradient-to-br from-vastu-parchment/80 to-white/60 rounded-3xl"
+          >
+            {isUnlocked ? (
+              <motion.div
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                className="text-center"
+              >
+                <div className="text-6xl mb-6">🎥</div>
+                <h3 className="font-serif text-2xl text-nidra-indigo mb-4">Your Meeting is Ready</h3>
+                <p className="text-nidra-indigo/70 mb-8">Click below to join the virtual consultation.</p>
+                <button
+                  onClick={handleJoin}
+                  className="luxury-button px-10 py-4 text-lg shadow-xl hover:shadow-2xl transition-all"
+                >
+                  Join Meeting Now
+                </button>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                className="text-center"
+              >
+                <div className="lock-animation mb-6">
+                  <div className="lock-body"><div className="lock-shackle"></div></div>
+                </div>
+                <h3 className="font-serif text-2xl text-nidra-indigo mb-2">Meeting Locked</h3>
+                <p className="text-nidra-indigo/70 mb-2">Unlocks 10 minutes before your scheduled time</p>
+                <p className="text-3xl font-mono text-sacred-saffron">{countdown}</p>
+                <p className="text-sm text-nidra-indigo/50 mt-4">
+                  Scheduled: {new Date(scheduledAt).toLocaleString()}
+                </p>
+              </motion.div>
+            )}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="meeting"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="relative aspect-video"
+          >
+            <iframe
+              ref={iframeRef}
+              src={fullJitsiUrl}
+              allow="camera; microphone; fullscreen; display-capture; autoplay"
+              className="w-full h-full"
+              style={{ border: 0 }}
+              title="VedicUrja Virtual Consultation"
+            />
+            <button
+              onClick={handleLeave}
+              className="absolute top-4 right-4 z-50 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:bg-white transition"
+            >
+              Leave Meeting
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style jsx>{`
+        .lock-animation { width: 100px; height: 100px; position: relative; animation: pulse 2s infinite; margin: 0 auto; }
+        .lock-body { width: 60px; height: 50px; background: #C88A5D; border-radius: 8px; position: absolute; bottom: 0; left: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .lock-shackle { width: 40px; height: 40px; border: 6px solid #C88A5D; border-bottom: none; border-radius: 40px 40px 0 0; position: absolute; top: -10px; left: 10px; }
+        @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+      `}</style>
+    </div>
+  );
+}

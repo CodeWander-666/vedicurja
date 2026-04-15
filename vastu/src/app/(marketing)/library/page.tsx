@@ -1,6 +1,5 @@
 'use client';
 import Header from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 import SmoothScroll from '@/components/global/ScrollSmoother';
 import { LuxuryCursor } from '@/components/global/LuxuryCursor';
 import { SoundController } from '@/components/global/SoundController';
@@ -17,7 +16,6 @@ export default function LibraryPage() {
             <h1 className="font-serif text-4xl text-center mb-8">Library</h1><p className="text-center">Coming soon.</p>
           </div>
         </main>
-        <Footer />
       </SmoothScroll>
     </>
   );

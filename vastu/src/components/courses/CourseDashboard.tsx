@@ -6,7 +6,6 @@ import { supabase } from '@/lib/supabaseClient';
 import { useSound } from '@/hooks/useSound';
 import { useAuth } from '@/hooks/useAuth';
 import Header from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 import { LuxuryCursor } from '@/components/global/LuxuryCursor';
 import { SoundController } from '@/components/global/SoundController';
 import SmoothScroll from '@/components/global/ScrollSmoother';
@@ -422,7 +421,6 @@ export default function CourseDashboard({ course }: { course: Course }) {
             )}
           </AnimatePresence>
         </main>
-        <Footer />
       </SmoothScroll>
     </>
   );

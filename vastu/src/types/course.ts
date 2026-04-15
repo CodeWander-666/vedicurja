@@ -5,6 +5,7 @@ export interface Chapter {
   notes: string | null;
   order_index: number;
   completed?: boolean;
+  quiz?: Quiz | null;
 }
 
 export interface Module {
@@ -35,4 +36,15 @@ export interface UserProgress {
 export interface QuizScore {
   quizId: string;
   score: number;
+}
+
+export interface Quiz {
+  id: string;
+  questions: QuizQuestion[];
+}
+
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  answerIndex: number;
 }
