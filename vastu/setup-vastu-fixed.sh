@@ -1,49 +1,290 @@
 #!/bin/bash
 # =============================================================================
-# VedicUrja – Safe Link href Fallback Patch (No Complex Regex)
+# VedicUrja – Luxury Header with Auth, 3D Buttons & Mobile Menu
 # =============================================================================
 set -euo pipefail
 
-GREEN='\033[0;32m'; BLUE='\033[0;34m'; NC='\033[0m'
+GREEN='\033[0;32m'; BLUE='\033[0;34m'; YELLOW='\033[1;33m'; NC='\033[0m'
 info()  { echo -e "${BLUE}ℹ️  $1${NC}"; }
 success() { echo -e "${GREEN}✅ $1${NC}"; }
+warn()  { echo -e "${YELLOW}⚠️  $1${NC}"; }
 
-# List of files to patch (add more if needed)
-FILES=(
-  "src/components/sections/home/CosmicHero.tsx"
-  "src/components/sections/home/AcharyaVow.tsx"
-  "src/components/sections/home/FinalCTA.tsx"
-  "src/components/sections/home/LearnVastuTeaser.tsx"
-  "src/components/sections/home/VirtualConsultCTA.tsx"
-  "src/components/sections/home/GlobalPresence.tsx"
-  "src/components/sections/tools/FreeToolCard3D.tsx"
-  "src/components/services/ServiceCard3DEnhanced.tsx"
-  "src/components/sections/home/SacredArchives.tsx"
-  "src/app/(marketing)/insights/page.tsx"
-  "src/app/(marketing)/client-stories/page.tsx"
-)
+BACKUP_DIR=".backups/header-luxury-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BACKUP_DIR"
+info "Backups saved to $BACKUP_DIR"
 
-for file in "${FILES[@]}"; do
-  if [ -f "$file" ]; then
-    cp "$file" "$file.bak"
-    # Replace href={variable} with href={variable || '#'}
-    sed -i "s/href={\([^}]*\)}/href={\1 || '#'}/g" "$file"
-    success "Patched $file"
-  else
-    info "Skipped $file (not found)"
-  fi
-done
+backup_file() { [ -f "$1" ] && cp "$1" "$BACKUP_DIR/"; }
 
-info "Cleaning Next.js cache..."
+HEADER_FILE="src/components/layout/Header.tsx"
+backup_file "$HEADER_FILE"
+
+# -----------------------------------------------------------------------------
+# Write the new Header component
+# -----------------------------------------------------------------------------
+cat > "$HEADER_FILE" <<'EOF'
+'use client';
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/lib/supabaseClient';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
+import { MagneticButton } from '@/components/global/MagneticButton';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+export default function Header() {
+  const { t } = useLanguage();
+  const { user, profile } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+
+  const menuItems = [
+    { key: 'home', href: '/' },
+    { key: 'freeAITools', href: '/free-tools' },
+    { key: 'services', href: '/services' },
+    { key: 'bookings', href: '/bookings' },
+    { key: 'learnVastu', href: '/learn-vastu' },
+    { key: 'blogs', href: '/insights' },
+    { key: 'testimonials', href: '/client-stories' },
+  ];
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setProfileMenuOpen(false);
+    window.location.href = '/';
+  };
+
+  const avatarUrl = profile?.avatar_url;
+  const userInitial = profile?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U';
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-30 bg-vastu-parchment/95 backdrop-blur-xl shadow-md border-b border-prakash-gold/20">
+      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="font-serif text-2xl vedic-gradient-text">
+          VedicUrja<span className="text-sacred-saffron">.</span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center space-x-6">
+          {menuItems.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              className="text-sm text-nidra-indigo/80 hover:text-sacred-saffron transition-colors"
+            >
+              {t(`common.${item.key}`)}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right Actions */}
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+
+          {user ? (
+            /* Logged In – Profile Avatar with Dropdown */
+            <div className="relative">
+              <button
+                onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                className="w-10 h-10 rounded-full overflow-hidden border-2 border-prakash-gold/50 hover:border-prakash-gold transition-all focus:outline-none"
+              >
+                {avatarUrl ? (
+                  <Image
+                    src={avatarUrl}
+                    alt="Profile"
+                    width={40}
+                    height={40}
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-prakash-gold to-sacred-saffron flex items-center justify-center text-white font-medium text-lg">
+                    {userInitial}
+                  </div>
+                )}
+              </button>
+
+              <AnimatePresence>
+                {profileMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 mt-3 w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-prakash-gold/30 overflow-hidden"
+                  >
+                    <div className="p-3 border-b border-prakash-gold/20">
+                      <p className="font-medium text-nidra-indigo">{profile?.full_name || 'User'}</p>
+                      <p className="text-xs text-nidra-indigo/60 truncate">{user.email}</p>
+                    </div>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setProfileMenuOpen(false)}
+                      className="block px-4 py-3 hover:bg-prakash-gold/10 transition"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/dashboard/library"
+                      onClick={() => setProfileMenuOpen(false)}
+                      className="block px-4 py-3 hover:bg-prakash-gold/10 transition"
+                    >
+                      My Library
+                    </Link>
+                    <Link
+                      href="/dashboard/account"
+                      onClick={() => setProfileMenuOpen(false)}
+                      className="block px-4 py-3 hover:bg-prakash-gold/10 transition"
+                    >
+                      Account Settings
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 transition"
+                    >
+                      Sign Out
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            /* Logged Out – Sign In Button */
+            <MagneticButton className="luxury-button !py-2 !px-5 text-sm">
+              <Link href="/signin">Sign In</Link>
+            </MagneticButton>
+          )}
+
+          {/* Consult CTA (always visible) */}
+          <MagneticButton className="hidden sm:block luxury-button !py-2 !px-5 text-sm">
+            <Link href="/contact">{t('common.consult')}</Link>
+          </MagneticButton>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 rounded-full hover:bg-prakash-gold/10 transition"
+            aria-label="Menu"
+          >
+            <div className="w-6 h-5 flex flex-col justify-between">
+              <span className={`block w-full h-0.5 bg-nidra-indigo transition-transform ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+              <span className={`block w-full h-0.5 bg-nidra-indigo transition-opacity ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block w-full h-0.5 bg-nidra-indigo transition-transform ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25 }}
+            className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-white shadow-2xl z-40 lg:hidden"
+          >
+            <div className="p-6 h-full flex flex-col">
+              <div className="flex justify-between items-center mb-8">
+                <span className="font-serif text-xl text-nidra-indigo">Menu</span>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-2xl text-nidra-indigo/60"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <nav className="flex flex-col space-y-4">
+                {menuItems.map((item) => (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-lg text-nidra-indigo/80 hover:text-sacred-saffron py-2 border-b border-prakash-gold/10"
+                  >
+                    {t(`common.${item.key}`)}
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="mt-auto pt-8 space-y-3">
+                {user ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full text-center py-3 bg-vastu-stone rounded-full"
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full text-center py-3 text-red-500 border border-red-200 rounded-full"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    href="/signin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full text-center py-3 luxury-button"
+                  >
+                    Sign In
+                  </Link>
+                )}
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full text-center py-3 bg-prakash-gold text-nidra-indigo rounded-full font-medium"
+                >
+                  {t('common.consult')}
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Overlay for mobile menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+    </header>
+  );
+}
+EOF
+
+success "Luxury header with auth, 3D buttons, and mobile menu written."
+
+# -----------------------------------------------------------------------------
+# Build verification
+# -----------------------------------------------------------------------------
 rm -rf .next
-
 info "Running production build..."
 if npm run build; then
-  success "✅ Build successful – runtime warnings silenced."
+    success "✅ Build successful! Enhanced header is live."
 else
-  echo "❌ Build failed – check logs."
-  exit 1
+    error "Build failed – check logs."
+    exit 1
 fi
 
 echo ""
-success "🎉 All Link href fallbacks applied. The null error will no longer appear."
+success "🎉 Header enhancements complete:"
+echo "   - Profile avatar when logged in (with dropdown)"
+echo "   - 3D animated luxury buttons (MagneticButton)"
+echo "   - Mobile burger menu with slide‑out drawer"
+echo "   - Real‑time profile sync"
+echo ""
+echo "📦 Backups saved in $BACKUP_DIR"
+echo "🚀 Run 'npm run dev' to see the new header."
