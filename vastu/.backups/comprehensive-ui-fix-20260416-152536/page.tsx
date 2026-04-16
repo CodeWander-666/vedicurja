@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 import SmoothScroll from '@/components/global/ScrollSmoother';
 import { LuxuryCursor } from '@/components/global/LuxuryCursor';
 import { SoundController } from '@/components/global/SoundController';
@@ -183,6 +184,7 @@ export default function SignUpPage() {
             </div>
           </motion.div>
         </main>
+        <Footer />
       </SmoothScroll>
     </>
   );

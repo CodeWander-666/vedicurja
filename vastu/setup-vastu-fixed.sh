@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# VedicUrja – Complete Footer Fix: Import + SSR + Social Links
+# VedicUrja – Fix Acharya Portrait (Mobile) + Sound Status Toast
 # =============================================================================
 set -euo pipefail
 
@@ -9,251 +9,107 @@ info()  { echo -e "${BLUE}ℹ️  $1${NC}"; }
 success() { echo -e "${GREEN}✅ $1${NC}"; }
 warn()  { echo -e "${YELLOW}⚠️  $1${NC}"; }
 
-BACKUP_DIR=".backups/footer-full-fix-$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR=".backups/portrait-sound-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 info "Backups saved to $BACKUP_DIR"
 
 backup_file() { [ -f "$1" ] && cp "$1" "$BACKUP_DIR/"; }
 
 # -----------------------------------------------------------------------------
-# 1. Rewrite Footer.tsx with default export and client-only behavior
+# 1. Fix Acharya Portrait in AcharyaVow for mobile
 # -----------------------------------------------------------------------------
-FOOTER_FILE="src/components/layout/Footer.tsx"
-backup_file "$FOOTER_FILE"
-
-cat > "$FOOTER_FILE" <<'EOF'
-'use client';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { useRealtimeContent } from '@/hooks/useRealtimeContent';
-import { SiteSetting } from '@/types/admin';
-
-const navigation = {
-  company: [
-    { name: 'About', href: '/about' },
-    { name: 'Our Story', href: '/story' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Privacy', href: '/privacy' },
-    { name: 'Terms', href: '/terms' },
-  ],
-  services: [
-    { name: 'Residential Vastu', href: '/services/residential' },
-    { name: 'Commercial Vastu', href: '/services/commercial' },
-    { name: 'Industrial Vastu', href: '/services/industrial' },
-    { name: 'Land Selection', href: '/services/land' },
-    { name: 'Spiritual Spaces', href: '/services/spiritual' },
-    { name: 'Geopathic Stress', href: '/services/geopathic' },
-    { name: 'Find a Consultant', href: '/vastu-consultant' },
-  ],
-  learn: [
-    { name: 'Learn Vastu', href: '/learn-vastu' },
-    { name: 'Free AI Tools', href: '/free-tools' },
-    { name: 'Insights', href: '/insights' },
-    { name: 'Client Stories', href: '/client-stories' },
-    { name: 'Library', href: '/library' },
-  ],
-  dashboard: [
-    { name: 'Dashboard', href: '/dashboard' },
-    { name: 'My Account', href: '/dashboard/account' },
-    { name: 'Billing', href: '/dashboard/billing' },
-    { name: 'My Library', href: '/dashboard/library' },
-    { name: 'Consultations', href: '/dashboard/consultations' },
-    { name: 'Book a Session', href: '/bookings' },
-  ],
-};
-
-const socialLinks = [
-  {
-    name: 'Facebook',
-    href: 'https://www.facebook.com/krishna.nagaich.7/',
-    icon: (props: any) => (
-      <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'Instagram',
-    href: 'https://www.instagram.com/vedicurja?igsh=MTFkb2NkbGJuamp2bg%3D%3D',
-    icon: (props: any) => (
-      <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.31.975.975 1.247 2.242 1.31 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.31 3.608-.975.975-2.242 1.247-3.608 1.31-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.31-.975-.975-1.247-2.242-1.31-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.334-2.633 1.31-3.608.975-.975 2.242-1.247 3.608-1.31C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.74 0 8.332.014 7.052.072 5.376.13 3.934.427 2.684 1.677 1.434 2.927 1.137 4.37 1.08 6.045.02 7.325 0 7.733 0 12s.02 4.675.08 5.955c.057 1.675.354 3.118 1.604 4.368 1.25 1.25 2.693 1.547 4.368 1.604C7.325 23.98 7.733 24 12 24s4.675-.02 5.955-.08c1.675-.057 3.118-.354 4.368-1.604 1.25-1.25 1.547-2.693 1.604-4.368.06-1.28.08-1.688.08-5.955s-.02-4.675-.08-5.955c-.057-1.675-.354-3.118-1.604-4.368C20.073.427 18.63.13 16.955.08 15.675.02 15.267 0 12 0z" />
-        <path d="M12 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'YouTube',
-    href: 'https://www.youtube.com/@vedicurja1589',
-    icon: (props: any) => (
-      <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'WhatsApp',
-    href: 'https://api.whatsapp.com/send/?phone=916393570832&text&type=phone_number&app_absent=0',
-    icon: (props: any) => (
-      <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.767 5.767 0 1.298.433 2.5 1.164 3.477l-1.074 2.47 2.548-.992c.642.365 1.373.578 2.129.578 3.181 0 5.767-2.586 5.767-5.767 0-3.181-2.586-5.767-5.767-5.767z" />
-      </svg>
-    ),
-  },
-];
-
-const fallbackContact = {
-  address: 'Rishita, Ansal Api, Celebrity Greens, P1101, Golf City, Sector B Ansal API, Lucknow, Muzaffar Nagar Ghusval, Uttar Pradesh 226030',
-  phone: '+91 6393570832',
-  email: 'Vedicurja2020@gmail.com',
-};
-
-export default function Footer() {
-  const [mounted, setMounted] = useState(false);
-  const { items: settings } = useRealtimeContent<SiteSetting>('site_settings');
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const getSetting = (key: string) => {
-    if (!mounted) return '';
-    return settings.find(s => s.key === key)?.value || '';
-  };
-
-  const aboutText = getSetting('footer_about') || 'VedicUrja – Ancient Wisdom. Modern Precision.';
-  const copyright = getSetting('footer_copyright') || `© ${new Date().getFullYear()} VedicUrja. All rights reserved.`;
-
-  return (
-    <footer className="bg-gradient-to-br from-nidra-indigo via-nidra-indigo/95 to-nidra-indigo/90 border-t border-prakash-gold/30 pt-16 pb-8" aria-labelledby="footer-heading">
-      <h2 id="footer-heading" className="sr-only">Footer</h2>
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-prakash-gold/20">
-          <div className="lg:col-span-1">
-            <Link href="/" className="font-serif text-2xl text-white hover:text-prakash-gold transition">
-              VedicUrja<span className="text-prakash-gold">.</span>
-            </Link>
-            <p className="mt-4 text-sm text-white/70 leading-relaxed">{aboutText}</p>
-            <div className="flex space-x-4 mt-6">
-              {socialLinks.map((item) => (
-                <motion.a
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full border border-prakash-gold/40 flex items-center justify-center text-prakash-gold hover:bg-prakash-gold hover:text-nidra-indigo transition"
-                  whileHover={{ scale: 1.1, rotateY: 10 }}
-                  whileTap={{ scale: 0.95 }}
-                  animate={{ rotate: [0, 5, 0, -5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  style={{ transformStyle: 'preserve-3d' }}
-                >
-                  <span className="sr-only">{item.name}</span>
-                  <item.icon className="h-5 w-5" aria-hidden="true" />
-                </motion.a>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Company</h3>
-            <ul className="space-y-2">
-              {navigation.company.map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Services</h3>
-            <ul className="space-y-2">
-              {navigation.services.map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Learn</h3>
-            <ul className="space-y-2 mb-6">
-              {navigation.learn.map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Client Area</h3>
-            <ul className="space-y-2">
-              {navigation.dashboard.map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Connect</h3>
-            <ul className="space-y-2 text-sm text-white/70">
-              <li className="flex items-start gap-2">
-                <span className="mt-0.5">📍</span>
-                <span>{fallbackContact.address}</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span>📞</span>
-                <a href={`tel:${fallbackContact.phone}`} className="hover:text-prakash-gold">{fallbackContact.phone}</a>
-              </li>
-              <li className="flex items-center gap-2">
-                <span>✉️</span>
-                <a href={`mailto:${fallbackContact.email}`} className="hover:text-prakash-gold">{fallbackContact.email}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-white/50">
-          <p>{copyright}</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="hover:text-prakash-gold transition">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-prakash-gold transition">Terms & Conditions</Link>
-            <Link href="/sitemap" className="hover:text-prakash-gold transition">Sitemap</Link>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-EOF
-success "Footer.tsx rewritten with default export and proper client handling."
-
-# -----------------------------------------------------------------------------
-# 2. Fix all imports: change `import { Footer }` to `import Footer`
-# -----------------------------------------------------------------------------
-info "Fixing Footer imports across the project..."
-find src -type f -name "*.tsx" -exec sed -i "s|import { Footer } from '@/components/layout/Footer'|import Footer from '@/components/layout/Footer'|g" {} \;
-find src -type f -name "*.tsx" -exec sed -i "s|import { Footer } from 'src/components/layout/Footer'|import Footer from 'src/components/layout/Footer'|g" {} \;
-
-# Also ensure layout.tsx uses default import
-LAYOUT_FILE="src/app/layout.tsx"
-if [ -f "$LAYOUT_FILE" ]; then
-    backup_file "$LAYOUT_FILE"
-    sed -i "s|import { Footer } from '@/components/layout/Footer'|import Footer from '@/components/layout/Footer'|g" "$LAYOUT_FILE"
-    success "layout.tsx import fixed."
+ACHARYA_VOW="src/components/sections/home/AcharyaVow.tsx"
+if [ -f "$ACHARYA_VOW" ]; then
+    backup_file "$ACHARYA_VOW"
+    # Adjust the portrait container to be fully visible on mobile
+    sed -i 's|relative h-\[300px\] sm:h-\[400px\] md:h-\[500px\]|relative h-[350px] sm:h-[400px] md:h-[500px] w-full|g' "$ACHARYA_VOW"
+    # Ensure the image itself uses object-contain or proper positioning
+    sed -i 's|object-cover|object-contain sm:object-cover|g' "$ACHARYA_VOW"
+    success "AcharyaVow portrait adjusted for mobile."
 fi
 
-success "All Footer imports converted to default import."
+# -----------------------------------------------------------------------------
+# 2. Enhance SoundController with play/pause toast notification
+# -----------------------------------------------------------------------------
+SOUND_CONTROLLER="src/components/global/SoundController.tsx"
+if [ -f "$SOUND_CONTROLLER" ]; then
+    backup_file "$SOUND_CONTROLLER"
+    cat > "$SOUND_CONTROLLER" <<'EOF'
+'use client';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { soundManager } from '@/lib/audio/soundManager';
+
+export function SoundController() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  useEffect(() => {
+    const unsubscribe = soundManager.subscribe(() => {
+      setIsPlaying(soundManager.isAmbientPlaying());
+      setIsMuted(soundManager.isMutedState());
+    });
+    soundManager.startAmbient();
+    soundManager.setVolume(0.6);
+    return unsubscribe;
+  }, []);
+
+  const triggerToast = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 1500);
+  };
+
+  const toggleAmbient = () => {
+    const nowPlaying = soundManager.isAmbientPlaying();
+    soundManager.toggleAmbient();
+    triggerToast(nowPlaying ? 'Music paused' : 'Music playing');
+  };
+
+  const toggleMute = () => {
+    const nowMuted = soundManager.isMutedState();
+    soundManager.toggleMute();
+    triggerToast(nowMuted ? 'Sound unmuted' : 'Sound muted');
+  };
+
+  return (
+    <>
+      <button
+        onClick={toggleAmbient}
+        onContextMenu={(e) => { e.preventDefault(); toggleMute(); }}
+        className="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm border border-prakash-gold shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+        title="Click to play/pause ambient music. Right-click to mute/unmute."
+      >
+        <span className={`text-2xl ${isPlaying && !isMuted ? 'animate-spin-slow text-prakash-gold' : 'text-nidra-indigo/60'}`}>
+          ॐ
+        </span>
+      </button>
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-24 left-6 z-50 px-4 py-2 bg-nidra-indigo/90 backdrop-blur-sm text-white text-sm rounded-full shadow-lg"
+          >
+            {toastMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+export default SoundController;
+EOF
+    success "SoundController enhanced with toast notifications."
+fi
 
 # -----------------------------------------------------------------------------
-# 3. Clean and rebuild
+# 3. Rebuild to verify
 # -----------------------------------------------------------------------------
 rm -rf .next
 info "Running production build..."
@@ -264,12 +120,10 @@ else
 fi
 
 echo ""
-success "🎉 Footer fully fixed:"
-echo "   - Default export used consistently"
-echo "   - Client‑only rendering with mounted state"
-echo "   - Social links updated (Facebook, Instagram, YouTube, WhatsApp)"
-echo "   - Contact info (address, phone, email) correct"
-echo "   - 3D looping animations on social icons"
+success "🎉 Fixes applied:"
+echo "   - Acharya portrait fully visible on mobile"
+echo "   - Om button shows 'Music playing' / 'Music paused' toast"
+echo "   - Right-click shows 'Sound muted' / 'Sound unmuted' toast"
 echo ""
 echo "📦 Backups saved in $BACKUP_DIR"
-echo "🚀 Run 'npm run dev' to see the working footer."
+echo "🚀 Run 'npm run dev' to see the changes."

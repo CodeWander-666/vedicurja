@@ -103,15 +103,15 @@ export default function Footer() {
   const copyright = getSetting('footer_copyright') || `© ${new Date().getFullYear()} VedicUrja. All rights reserved.`;
 
   return (
-    <footer className="bg-gradient-to-br from-sacred-saffron via-kumkuma-red to-prakash-gold border-t border-prakash-gold/30 pt-16 pb-8" aria-labelledby="footer-heading">
+    <footer className="bg-gradient-to-br from-nidra-indigo via-nidra-indigo/95 to-nidra-indigo/90 border-t border-prakash-gold/30 pt-16 pb-8" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">Footer</h2>
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-white/30">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-prakash-gold/20">
           <div className="lg:col-span-1">
-            <Link href="/" className="font-serif text-2xl text-white hover:text-white transition">
+            <Link href="/" className="font-serif text-2xl text-white hover:text-prakash-gold transition">
               VedicUrja<span className="text-prakash-gold">.</span>
             </Link>
-            <p className="mt-4 text-sm text-white/90 leading-relaxed">{aboutText}</p>
+            <p className="mt-4 text-sm text-white/70 leading-relaxed">{aboutText}</p>
             <div className="flex space-x-4 mt-6">
               {socialLinks.map((item) => (
                 <motion.a
@@ -137,7 +137,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {navigation.company.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/90 hover:text-white transition">
+                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
                     {item.name}
                   </Link>
                 </li>
@@ -149,7 +149,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {navigation.services.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/90 hover:text-white transition">
+                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
                     {item.name}
                   </Link>
                 </li>
@@ -161,7 +161,7 @@ export default function Footer() {
             <ul className="space-y-2 mb-6">
               {navigation.learn.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/90 hover:text-white transition">
+                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
                     {item.name}
                   </Link>
                 </li>
@@ -171,7 +171,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {navigation.dashboard.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/90 hover:text-white transition">
+                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
                     {item.name}
                   </Link>
                 </li>
@@ -180,28 +180,28 @@ export default function Footer() {
           </div>
           <div>
             <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Connect</h3>
-            <ul className="space-y-2 text-sm text-white/90">
+            <ul className="space-y-2 text-sm text-white/70">
               <li className="flex items-start gap-2">
                 <span className="mt-0.5">📍</span>
                 <span>{fallbackContact.address}</span>
               </li>
               <li className="flex items-center gap-2">
                 <span>📞</span>
-                <a href={`tel:${fallbackContact.phone}`} className="hover:text-white">{fallbackContact.phone}</a>
+                <a href={`tel:${fallbackContact.phone}`} className="hover:text-prakash-gold">{fallbackContact.phone}</a>
               </li>
               <li className="flex items-center gap-2">
                 <span>✉️</span>
-                <a href={`mailto:${fallbackContact.email}`} className="hover:text-white">{fallbackContact.email}</a>
+                <a href={`mailto:${fallbackContact.email}`} className="hover:text-prakash-gold">{fallbackContact.email}</a>
               </li>
             </ul>
           </div>
         </div>
-        <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-white/80">
+        <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-white/50">
           <p>{copyright}</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-white transition">Terms & Conditions</Link>
-            <Link href="/sitemap" className="hover:text-white transition">Sitemap</Link>
+            <Link href="/privacy" className="hover:text-prakash-gold transition">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-prakash-gold transition">Terms & Conditions</Link>
+            <Link href="/sitemap" className="hover:text-prakash-gold transition">Sitemap</Link>
           </div>
         </div>
       </div>

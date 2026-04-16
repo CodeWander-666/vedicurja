@@ -42,8 +42,8 @@ export function AcharyaVow() {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl mx-auto">
           <motion.div style={{ scale }} className="relative order-2 md:order-1">
-            <div className="relative h-[350px] sm:h-[400px] md:h-[500px] w-full rounded-3xl overflow-hidden shadow-2xl border-4 border-prakash-gold/30">
-              <Image src="/images/home/acharya-portrait.jpg" alt="Acharya KK Nagaich ji" fill className="object-contain sm:object-cover" />
+            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl border-4 border-prakash-gold/30">
+              <Image src="/images/home/acharya-portrait.jpg" alt="Acharya KK Nagaich ji" fill className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-nidra-indigo/60 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
                 <p className="font-serif text-xl sm:text-2xl">Acharya KK Nagaich ji</p>

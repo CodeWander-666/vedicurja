@@ -38,7 +38,7 @@ export default function Header() {
   const isAdmin = profile?.role === 'admin';
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 bg-vastu-parchment/95 backdrop-blur-xl shadow-md border-b border-prakash-gold/20">
+    <header className="fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-sacred-saffron/95 via-kumkuma-red/95 to-prakash-gold/95 backdrop-blur-xl shadow-md border-b border-white/30">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
@@ -53,8 +53,8 @@ export default function Header() {
               priority
             />
           ) : (
-            <span className="font-serif text-2xl vedic-gradient-text">
-              VedicUrja<span className="text-sacred-saffron">.</span>
+            <span className="font-serif text-2xl text-white drop-shadow-md">
+              VedicUrja<span className="text-white">.</span>
             </span>
           )}
         </Link>
@@ -65,7 +65,7 @@ export default function Header() {
             <Link
               key={item.key}
               href={item.href}
-              className="text-sm text-nidra-indigo/80 hover:text-sacred-saffron transition-colors"
+              className="text-sm font-medium text-white/90 hover:text-white transition-colors drop-shadow"
             >
               {t(`common.${item.key}`)}
             </Link>
@@ -77,22 +77,15 @@ export default function Header() {
           <LanguageSwitcher />
 
           {user ? (
-            /* Logged In – Profile Avatar with Dropdown */
             <div className="relative">
               <button
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                className="w-10 h-10 rounded-full overflow-hidden border-2 border-prakash-gold/50 hover:border-prakash-gold transition-all focus:outline-none"
+                className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/70 hover:border-white transition-all focus:outline-none"
               >
                 {avatarUrl ? (
-                  <Image
-                    src={avatarUrl}
-                    alt="Profile"
-                    width={40}
-                    height={40}
-                    className="object-cover"
-                  />
+                  <Image src={avatarUrl} alt="Profile" width={40} height={40} className="object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-prakash-gold to-sacred-saffron flex items-center justify-center text-white font-medium text-lg">
+                  <div className="w-full h-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white font-medium text-lg">
                     {userInitial}
                   </div>
                 )}
@@ -104,87 +97,56 @@ export default function Header() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-3 w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-prakash-gold/30 overflow-hidden"
+                    className="absolute right-0 mt-3 w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/30 overflow-hidden"
                   >
-                    <div className="p-3 border-b border-prakash-gold/20">
+                    <div className="p-3 border-b border-white/20">
                       <p className="font-medium text-nidra-indigo">{profile?.full_name || 'User'}</p>
                       <p className="text-xs text-nidra-indigo/60 truncate">{user.email}</p>
                     </div>
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setProfileMenuOpen(false)}
-                      className="block px-4 py-3 hover:bg-prakash-gold/10 transition"
-                    >
-                      Dashboard
-                    </Link>
-                    <Link
-                      href="/dashboard/library"
-                      onClick={() => setProfileMenuOpen(false)}
-                      className="block px-4 py-3 hover:bg-prakash-gold/10 transition"
-                    >
-                      My Library
-                    </Link>
-                    <Link
-                      href="/dashboard/account"
-                      onClick={() => setProfileMenuOpen(false)}
-                      className="block px-4 py-3 hover:bg-prakash-gold/10 transition"
-                    >
-                      Account Settings
-                    </Link>
+                    <Link href="/dashboard" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-nidra-indigo">Dashboard</Link>
+                    <Link href="/dashboard/library" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-nidra-indigo">My Library</Link>
+                    <Link href="/dashboard/account" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-nidra-indigo">Account Settings</Link>
                     {isAdmin && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setProfileMenuOpen(false)}
-                        className="block px-4 py-3 hover:bg-prakash-gold/10 transition border-t border-prakash-gold/20"
-                      >
-                        🛡️ Admin Panel
-                      </Link>
+                      <Link href="/admin" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition border-t border-white/20 text-nidra-indigo">🛡️ Admin Panel</Link>
                     )}
-                    <button
-                      onClick={handleSignOut}
-                      className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 transition"
-                    >
-                      Sign Out
-                    </button>
+                    <button onClick={handleSignOut} className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 transition">Sign Out</button>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           ) : (
-            /* Logged Out – Sign In Button */
-            <MagneticButton className="luxury-button !py-2 !px-5 text-sm">
+            <MagneticButton className="bg-white/20 backdrop-blur-sm border border-white/50 text-white font-medium px-5 py-2 rounded-full hover:bg-white hover:text-nidra-indigo transition">
               <Link href="/signin">Sign In</Link>
             </MagneticButton>
           )}
 
-          {/* Admin Badge (quick access) */}
           {isAdmin && (
-            <Link href="/admin" className="hidden sm:block text-xs bg-prakash-gold/20 text-prakash-gold px-3 py-1 rounded-full border border-prakash-gold/50">
-              Admin
-            </Link>
+            <Link href="/admin" className="hidden sm:block text-xs bg-white/30 backdrop-blur-sm text-white px-3 py-1 rounded-full border border-white/50">Admin</Link>
           )}
 
-          {/* Consult CTA (always visible) */}
-          <MagneticButton className="hidden sm:block luxury-button !py-2 !px-5 text-sm">
+          <MagneticButton className="hidden sm:block bg-white text-nidra-indigo font-medium px-5 py-2 rounded-full shadow-md hover:shadow-lg transition">
             <Link href="/contact">{t('common.consult')}</Link>
           </MagneticButton>
 
-          {/* Mobile Menu Toggle */}
-          <button
+          {/* Mobile Menu Toggle with 3D Animation */}
+          <motion.button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-full hover:bg-prakash-gold/10 transition"
+            className="lg:hidden p-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/50"
+            whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
+            whileTap={{ scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 300 }}
             aria-label="Menu"
           >
             <div className="w-6 h-5 flex flex-col justify-between">
-              <span className={`block w-full h-0.5 bg-nidra-indigo transition-transform ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-              <span className={`block w-full h-0.5 bg-nidra-indigo transition-opacity ${mobileMenuOpen ? 'opacity-0' : ''}`} />
-              <span className={`block w-full h-0.5 bg-nidra-indigo transition-transform ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+              <span className={`block w-full h-0.5 bg-white transition-transform ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+              <span className={`block w-full h-0.5 bg-white transition-opacity ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block w-full h-0.5 bg-white transition-transform ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
             </div>
-          </button>
+          </motion.button>
         </div>
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Menu Drawer – Red‑Orange Gradient */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -192,17 +154,12 @@ export default function Header() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25 }}
-            className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-white/95 backdrop-blur-xl shadow-2xl z-40 lg:hidden"
+            className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl z-40 lg:hidden"
           >
             <div className="p-6 h-full flex flex-col">
               <div className="flex justify-between items-center mb-8">
-                <span className="font-serif text-xl text-nidra-indigo">Menu</span>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-2xl text-nidra-indigo/60"
-                >
-                  ✕
-                </button>
+                <span className="font-serif text-xl text-white drop-shadow">Menu</span>
+                <button onClick={() => setMobileMenuOpen(false)} className="text-2xl text-white/80">✕</button>
               </div>
 
               <nav className="flex flex-col space-y-4">
@@ -211,7 +168,7 @@ export default function Header() {
                     key={item.key}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="text-lg text-nidra-indigo/80 hover:text-sacred-saffron py-2 border-b border-prakash-gold/10"
+                    className="text-lg text-white/90 hover:text-white py-2 border-b border-white/20"
                   >
                     {t(`common.${item.key}`)}
                   </Link>
@@ -221,43 +178,16 @@ export default function Header() {
               <div className="mt-auto pt-8 space-y-3">
                 {user ? (
                   <>
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full text-center py-3 bg-vastu-stone rounded-full"
-                    >
-                      Dashboard
-                    </Link>
+                    <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white/20 backdrop-blur-sm text-white rounded-full">Dashboard</Link>
                     {isAdmin && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-center py-3 bg-prakash-gold/20 text-prakash-gold rounded-full border border-prakash-gold/50"
-                      >
-                        Admin Panel
-                      </Link>
+                      <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white/30 backdrop-blur-sm text-white rounded-full border border-white/50">Admin Panel</Link>
                     )}
-                    <button
-                      onClick={handleSignOut}
-                      className="block w-full text-center py-3 text-red-500 border border-red-200 rounded-full"
-                    >
-                      Sign Out
-                    </button>
+                    <button onClick={handleSignOut} className="block w-full text-center py-3 text-white border border-white/50 rounded-full">Sign Out</button>
                   </>
                 ) : (
-                  <Link
-                    href="/signin"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full text-center py-3 luxury-button"
-                  >
-                    Sign In
-                  </Link>
+                  <Link href="/signin" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white text-nidra-indigo rounded-full font-medium">Sign In</Link>
                 )}
-                <Link
-                  href="/contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block w-full text-center py-3 bg-prakash-gold text-nidra-indigo rounded-full font-medium"
-                >
+                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white text-nidra-indigo rounded-full font-medium shadow-lg">
                   {t('common.consult')}
                 </Link>
               </div>
@@ -273,7 +203,7 @@ export default function Header() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 lg:hidden"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden"
             onClick={() => setMobileMenuOpen(false)}
           />
         )}

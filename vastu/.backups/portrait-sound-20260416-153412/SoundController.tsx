@@ -1,0 +1,48 @@
+'use client';
+import { useEffect, useState } from 'react';
+import { soundManager } from '@/lib/audio/soundManager';
+
+export function SoundController() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+
+  useEffect(() => {
+    // Subscribe to state changes
+    const unsubscribe = soundManager.subscribe(() => {
+      setIsPlaying(soundManager.isAmbientPlaying());
+      setIsMuted(soundManager.isMutedState());
+    });
+
+    // Auto-start ambient music when component mounts (site loads)
+    // But respect browser autoplay policies – will start after first user interaction
+    // We attempt to play immediately; if blocked, it will play on first click anywhere.
+    soundManager.startAmbient();
+
+    // Also set initial volume to 60%
+    soundManager.setVolume(0.6);
+
+    return unsubscribe;
+  }, []);
+
+  const toggleAmbient = () => {
+    soundManager.toggleAmbient();
+  };
+
+  const toggleMute = () => {
+    soundManager.toggleMute();
+  };
+
+  return (
+    <button
+      onClick={toggleAmbient}
+      onContextMenu={(e) => { e.preventDefault(); toggleMute(); }}
+      className="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm border border-prakash-gold shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+      title="Click to play/pause ambient music. Right-click to mute/unmute."
+    >
+      <span className={`text-2xl ${isPlaying && !isMuted ? 'animate-spin-slow text-prakash-gold' : 'text-nidra-indigo/60'}`}>
+        ॐ
+      </span>
+    </button>
+  );
+}
+export default SoundController;
