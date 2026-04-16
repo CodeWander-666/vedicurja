@@ -168,15 +168,15 @@ export default function Header() {
             >
               {/* Header */}
               <div className="p-6 flex justify-between items-center border-b border-white/20">
-                <span className="font-serif text-2xl text-nidra-indigo drop-shadow-md">VedicUrja</span>
+                <span className="font-serif text-2xl text-white drop-shadow-md">VedicUrja</span>
                 <motion.button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 flex items-center justify-center"
+                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 >
-                  <span className="text-nidra-indigo text-xl">✕</span>
+                  <span className="text-white text-xl">✕</span>
                 </motion.button>
               </div>
 
@@ -188,7 +188,7 @@ export default function Header() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    whileHover={{ scale: 1.03, rotateX: 2, rotateY: -3 }}
+                    whileHover={{ scale: 1.02, rotateX: 2, rotateY: -2 }}
                     whileTap={{ scale: 0.98 }}
                     style={{ transformStyle: 'preserve-3d', perspective: 1000 }}
                     className="w-full"
@@ -196,12 +196,13 @@ export default function Header() {
                     <Link
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full px-6 py-4 bg-white/85 backdrop-blur-sm border border-prakash-gold/40 rounded-2xl text-nidra-indigo font-medium text-lg shadow-md hover:bg-white hover:shadow-lg hover:border-prakash-gold transition-all"
+                      className="block w-full px-6 py-4 bg-white/80 backdrop-blur-sm border border-prakash-gold/50 rounded-2xl text-nidra-indigo font-medium text-lg shadow-lg hover:bg-white hover:shadow-lg transition-colors"
                     >
                       {t(`common.${item.key}`)}
                     </Link>
                   </motion.div>
                 ))}
+              </nav>
 
               {/* Footer Actions */}
               <div className="p-6 border-t border-white/20 space-y-3">
@@ -259,58 +260,7 @@ export default function Header() {
                     {t('common.consult')}
                   </Link>
                 </motion.div>
-                {user ? (
-                  <>
-                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-center py-3.5 bg-white/90 backdrop-blur-sm border border-prakash-gold/40 rounded-full text-nidra-indigo font-medium shadow-md hover:bg-white hover:shadow-lg transition-all"
-                      >
-                        Dashboard
-                      </Link>
-                    </motion.div>
-                    {isAdmin && (
-                      <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }} className="mt-3">
-                        <Link
-                          href="/admin"
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="block w-full text-center py-3.5 bg-white/90 backdrop-blur-sm border border-prakash-gold rounded-full text-nidra-indigo font-medium shadow-md hover:bg-white hover:shadow-lg transition-all"
-                        >
-                          🛡️ Admin Panel
-                        </Link>
-                      </motion.div>
-                    )}
-                    <motion.button
-                      onClick={() => { handleSignOut(); setMobileMenuOpen(false); }}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.98 }}
-                      style={{ transformStyle: 'preserve-3d' }}
-                      className="block w-full text-center py-3.5 mt-3 bg-transparent border border-white/60 rounded-full text-white font-medium hover:bg-white/10 transition-all"
-                    >
-                      Sign Out
-                    </motion.button>
-                  </>
-                ) : (
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
-                    <Link
-                      href="/signin"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full text-center py-3.5 bg-white text-nidra-indigo rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
-                    >
-                      Sign In
-                    </Link>
-                  </motion.div>
-                )}
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }} className="mt-3">
-                  <Link
-                    href="/contact"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full text-center py-3.5 bg-white text-nidra-indigo rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
-                  >
-                    {t('common.consult')}
-                  </Link>
-                </motion.div>
+              </div>
             </motion.div>
           </>
         )}
