@@ -129,7 +129,7 @@ export default function Header() {
             <Link href="/contact">{t('common.consult')}</Link>
           </MagneticButton>
 
-          {/* Mobile Menu Toggle (Hamburger) */}
+          {/* Mobile Menu Toggle */}
           <motion.button
             onClick={() => setMobileMenuOpen(true)}
             className="lg:hidden relative w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
@@ -154,7 +154,7 @@ export default function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 lg:hidden flex items-center justify-center"
+            className="fixed inset-0 z-50 lg:hidden flex items-center justify-center p-4"
           >
             {/* Blurred Background Overlay */}
             <div 
@@ -168,7 +168,7 @@ export default function Header() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative z-10 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto overscroll-contain rounded-3xl bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl border-2 border-prakash-gold/50 p-5 sm:p-6"
+              className="relative z-10 w-full max-w-md max-h-[85vh] overflow-y-auto overscroll-contain rounded-3xl bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl border-2 border-prakash-gold/50 p-5 sm:p-6"
             >
               {/* Close Button */}
               <div className="flex justify-end mb-4">
@@ -202,7 +202,7 @@ export default function Header() {
                 </div>
               )}
 
-              {/* Navigation Links – Bold, Large, High Contrast */}
+              {/* Navigation Links */}
               <nav className="space-y-3 mb-6">
                 {menuItems.map((item, index) => (
                   <motion.div
@@ -224,7 +224,7 @@ export default function Header() {
                 ))}
               </nav>
 
-              {/* Action Buttons – Full Width, Bold */}
+              {/* Action Buttons */}
               <div className="space-y-3 border-t border-white/30 pt-4">
                 {user ? (
                   <>
@@ -239,7 +239,7 @@ export default function Header() {
                       <Link
                         href="/admin"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-center py-4 bg-white/90 text-nidra-indigo rounded-full font-bold text-lg border-2 border-white shadow-lg hover:bg-white transition-all"
+                        className="block w-full text-center py-3 sm:py-4 bg-white/90 text-nidra-indigo rounded-full font-bold text-base sm:text-lg border-2 border-white shadow-lg hover:bg-white transition-all"
                       >
                         🛡️ Admin Panel
                       </Link>
