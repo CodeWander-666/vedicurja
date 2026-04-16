@@ -51,7 +51,7 @@ export default function Header() {
   const isAdmin = profile?.role === 'admin';
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-sacred-saffron/95 via-kumkuma-red/95 to-prakash-gold/95 backdrop-blur-xl shadow-md border-b border-white/30">
+    <header className="fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-sacred-saffron/95 via-kumkuma-red/95 to-prakash-gold/95 backdrop-blur-xl shadow-md border-b border-white/30">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
@@ -162,133 +162,129 @@ export default function Header() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            key="mobile-menu-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 lg:hidden"
-            style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
+            className="fixed inset-0 z-[100] lg:hidden flex items-center justify-center p-4"
+            style={{ zIndex: 100 }}
           >
-            {/* Backdrop */}
+            {/* Blurred Background Overlay */}
             <div
-              className="absolute inset-0 bg-black/40 backdrop-blur-md"
+              className="absolute inset-0 bg-black/50 backdrop-blur-xl"
               onClick={() => setMobileMenuOpen(false)}
               aria-hidden="true"
             />
 
-            {/* Slide‑in Panel - MOVED OUTSIDE OF ANY RELATIVE PARENT */}
+            {/* Menu Content – Inline gradient guarantees visibility */}
             <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="absolute top-0 bottom-0 right-0 w-full max-w-md bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl flex flex-col overflow-hidden"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative z-10 w-full max-w-md max-h-[85vh] overflow-y-auto overscroll-contain rounded-3xl shadow-2xl border-2 border-prakash-gold/50 p-5 sm:p-6"
+              style={{
+                background: 'linear-gradient(to bottom, #FF9933, #C10000, #E8B960)',
+                zIndex: 101,
+              }}
             >
-              {/* Panel Header with Close Button */}
-              <div className="flex justify-end p-4 sm:p-6 flex-shrink-0">
+              {/* Close Button */}
+              <div className="flex justify-end mb-4">
                 <motion.button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                  className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
-                  aria-label="Close menu"
                 >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
+                  <span className="text-white text-2xl">✕</span>
                 </motion.button>
               </div>
 
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto overscroll-contain px-4 sm:px-6 pb-6">
-                {/* User Profile Section */}
-                {user && (
-                  <div className="mb-6 p-4 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/70 bg-white/30 flex items-center justify-center">
-                        {avatarUrl ? (
-                          <Image src={avatarUrl} alt="Profile" width={56} height={56} className="object-cover" />
-                        ) : (
-                          <span className="text-white text-2xl font-medium">{userInitial}</span>
-                        )}
-                      </div>
-                      <div>
-                        <p className="text-white font-bold text-lg">{profile?.full_name || 'User'}</p>
-                        <p className="text-white/80 text-sm truncate">{user.email}</p>
-                        {isAdmin && <span className="text-xs bg-white/30 text-white px-2 py-0.5 rounded-full">Admin</span>}
-                      </div>
+              {/* User Profile Section (if logged in) */}
+              {user && (
+                <div className="mb-6 p-4 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/70 bg-white/30 flex items-center justify-center">
+                      {avatarUrl ? (
+                        <Image src={avatarUrl} alt="Profile" width={56} height={56} className="object-cover" />
+                      ) : (
+                        <span className="text-white text-2xl font-medium">{userInitial}</span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-white font-bold text-lg">{profile?.full_name || 'User'}</p>
+                      <p className="text-white/80 text-sm truncate">{user.email}</p>
+                      {isAdmin && <span className="text-xs bg-white/30 text-white px-2 py-0.5 rounded-full">Admin</span>}
                     </div>
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* Navigation Links */}
-                <nav className="space-y-3 mb-6">
-                  {menuItems.map((item, index) => (
-                    <motion.div
-                      key={item.key}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      whileHover={{ scale: 1.02, x: 5 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full px-5 py-4 sm:px-6 sm:py-5 bg-white/90 backdrop-blur-sm border-2 border-white rounded-2xl text-nidra-indigo font-bold text-lg sm:text-xl shadow-lg hover:bg-white hover:shadow-xl transition-all"
-                      >
-                        {t(`common.${item.key}`)}
-                      </Link>
-                    </motion.div>
-                  ))}
-                </nav>
-
-                {/* Action Buttons */}
-                <div className="space-y-3 border-t border-white/30 pt-4">
-                  {user ? (
-                    <>
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-center py-3 sm:py-4 bg-white text-nidra-indigo rounded-full font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
-                      >
-                        Dashboard
-                      </Link>
-                      {isAdmin && (
-                        <Link
-                          href="/admin"
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="block w-full text-center py-3 sm:py-4 bg-white/90 text-nidra-indigo rounded-full font-bold text-base sm:text-lg border-2 border-white shadow-lg hover:bg-white transition-all"
-                        >
-                          🛡️ Admin Panel
-                        </Link>
-                      )}
-                      <button
-                        onClick={handleSignOut}
-                        className="block w-full text-center py-3 sm:py-4 bg-transparent border-2 border-white text-white rounded-full font-bold text-base sm:text-lg hover:bg-white/10 transition-all"
-                      >
-                        Sign Out
-                      </button>
-                    </>
-                  ) : (
+              {/* Navigation Links */}
+              <nav className="space-y-3 mb-6">
+                {menuItems.map((item, index) => (
+                  <motion.div
+                    key={item.key}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <Link
-                      href="/signin"
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full px-5 py-4 sm:px-6 sm:py-5 bg-white/90 backdrop-blur-sm border-2 border-white rounded-2xl text-nidra-indigo font-bold text-lg sm:text-xl shadow-lg hover:bg-white hover:shadow-xl transition-all"
+                    >
+                      {t(`common.${item.key}`)}
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
+
+              {/* Action Buttons */}
+              <div className="space-y-3 border-t border-white/30 pt-4">
+                {user ? (
+                  <>
+                    <Link
+                      href="/dashboard"
                       onClick={() => setMobileMenuOpen(false)}
                       className="block w-full text-center py-3 sm:py-4 bg-white text-nidra-indigo rounded-full font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
                     >
-                      Sign In
+                      Dashboard
                     </Link>
-                  )}
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block w-full text-center py-3 sm:py-4 bg-white/90 text-nidra-indigo rounded-full font-bold text-base sm:text-lg border-2 border-white shadow-lg hover:bg-white transition-all"
+                      >
+                        🛡️ Admin Panel
+                      </Link>
+                    )}
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full text-center py-3 sm:py-4 bg-transparent border-2 border-white text-white rounded-full font-bold text-base sm:text-lg hover:bg-white/10 transition-all"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
                   <Link
-                    href="/contact"
+                    href="/signin"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block w-full text-center py-3 sm:py-4 bg-white text-nidra-indigo rounded-full font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
                   >
-                    {t('common.consult')}
+                    Sign In
                   </Link>
-                </div>
+                )}
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full text-center py-3 sm:py-4 bg-white text-nidra-indigo rounded-full font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
+                >
+                  {t('common.consult')}
+                </Link>
               </div>
             </motion.div>
           </motion.div>
