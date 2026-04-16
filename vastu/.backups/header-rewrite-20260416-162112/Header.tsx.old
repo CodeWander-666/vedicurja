@@ -128,7 +128,7 @@ export default function Header() {
             <Link href="/contact">{t('common.consult')}</Link>
           </MagneticButton>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Menu Toggle – 3D Animated */}
           <motion.button
             onClick={() => setMobileMenuOpen(true)}
             className="lg:hidden relative w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
@@ -146,7 +146,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu Drawer – Solid Red‑Orange Gradient + 3D Black Text Buttons */}
+      {/* Mobile Menu Drawer – Solid Red‑Orange Gradient with 3D Menu Items */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -164,23 +164,23 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl border-2 border-prakash-gold/50 ring-1 ring-white/20 z-50 lg:hidden flex flex-col"
+              className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl border-2 border-prakash-gold/50 z-50 lg:hidden flex flex-col"
             >
-              {/* Drawer Header */}
+              {/* Header */}
               <div className="p-6 flex justify-between items-center border-b border-white/20">
-                <span className="font-serif text-2xl text-white drop-shadow-md">VedicUrja</span>
+                <span className="font-serif text-2xl text-nidra-indigo drop-shadow-md">VedicUrja</span>
                 <motion.button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
+                  className="w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 flex items-center justify-center"
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 >
-                  <span className="text-white text-xl">✕</span>
+                  <span className="text-nidra-indigo text-xl">✕</span>
                 </motion.button>
               </div>
 
-              {/* Navigation Items – Black Text, 3D Effects */}
+              {/* Navigation Items – 3D Magnetic Buttons */}
               <nav className="flex-1 overflow-y-auto p-6 space-y-2">
                 {menuItems.map((item, index) => (
                   <motion.div
@@ -202,10 +202,63 @@ export default function Header() {
                     </Link>
                   </motion.div>
                 ))}
-              </nav>
 
-              {/* Footer Actions – Black Text, Premium White Backgrounds */}
+              {/* Footer Actions */}
               <div className="p-6 border-t border-white/20 space-y-3">
+                {user ? (
+                  <>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block w-full text-center py-3 bg-white/80 backdrop-blur-sm border border-prakash-gold/50 rounded-full text-nidra-indigo font-medium"
+                      >
+                        Dashboard
+                      </Link>
+                    </motion.div>
+                    {isAdmin && (
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
+                        <Link
+                          href="/admin"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block w-full text-center py-3 bg-white/90 backdrop-blur-sm border border-prakash-gold rounded-full text-nidra-indigo font-medium"
+                        >
+                          Admin Panel
+                        </Link>
+                      </motion.div>
+                    )}
+                    <motion.button
+                      onClick={() => { handleSignOut(); setMobileMenuOpen(false); }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      style={{ transformStyle: 'preserve-3d' }}
+                      className="block w-full text-center py-3 bg-transparent border border-prakash-gold rounded-full text-nidra-indigo font-medium"
+                    >
+                      Sign Out
+                    </motion.button>
+                  </>
+                ) : (
+                  <>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
+                      <Link
+                        href="/signin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block w-full text-center py-3 bg-white text-nidra-indigo rounded-full font-medium shadow-lg"
+                      >
+                        Sign In
+                      </Link>
+                    </motion.div>
+                  </>
+                )}
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
+                  <Link
+                    href="/contact"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full text-center py-3 bg-white text-nidra-indigo rounded-full font-medium shadow-lg"
+                  >
+                    {t('common.consult')}
+                  </Link>
+                </motion.div>
                 {user ? (
                   <>
                     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
@@ -258,7 +311,6 @@ export default function Header() {
                     {t('common.consult')}
                   </Link>
                 </motion.div>
-              </div>
             </motion.div>
           </>
         )}
