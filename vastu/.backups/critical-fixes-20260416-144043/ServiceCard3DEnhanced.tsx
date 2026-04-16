@@ -7,7 +7,7 @@ import { useSound } from '@/hooks/useSound';
 interface ServiceCard3DEnhancedProps {
   title: string;
   description: string;
-  icon: string; // kept for compatibility but not used
+  icon: string;
   benefits: string[];
   href: string;
   colorGradient: string;
@@ -17,6 +17,7 @@ interface ServiceCard3DEnhancedProps {
 export default function ServiceCard3DEnhanced({
   title,
   description,
+  icon,
   benefits,
   href,
   colorGradient,
@@ -41,8 +42,14 @@ export default function ServiceCard3DEnhanced({
     y.set((e.clientY - centerY) / (rect.height / 2));
   };
 
-  const handleMouseEnter = () => { play('hoverCard'); };
-  const handleMouseLeave = () => { x.set(0); y.set(0); };
+  const handleMouseEnter = () => {
+    play('hoverCard');
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
   return (
     <motion.div
@@ -57,36 +64,40 @@ export default function ServiceCard3DEnhanced({
         className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl transition-shadow duration-300 group-hover:shadow-[0_30px_60px_-15px_rgba(200,138,93,0.5)]"
         style={{ background: colorGradient }}
       >
-        {/* Full Image Background – No Emoji Overlay */}
-        <div className="absolute inset-0">
-          <img 
-            src={imagePlaceholder} 
-            alt={title}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
-        {/* Gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-nidra-indigo/70 via-nidra-indigo/30 to-transparent" />
+        {/* Glass overlay */}
+        <div className="absolute inset-0 bg-white/20 backdrop-blur-[2px] rounded-3xl" />
         
         {/* Content */}
-        <div className="relative z-10 p-6 h-full flex flex-col justify-end text-white">
-          <h3 className="font-serif text-2xl mb-2 drop-shadow-lg">{title}</h3>
-          <p className="text-sm text-white/80 mb-4 drop-shadow-md">{description}</p>
+        <div className="relative z-10 p-6 h-full flex flex-col">
+          <div className="text-5xl mb-4 drop-shadow-lg">{icon}</div>
+          <h3 className="font-serif text-2xl text-nidra-indigo mb-2">{title}</h3>
+          <p className="text-sm text-nidra-indigo/70 mb-4">{description}</p>
           
           {/* Benefits */}
           <div className="space-y-2 mb-6">
             {benefits.map((benefit, i) => (
               <div key={i} className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-prakash-gold" />
-                <span className="text-xs text-white/90 drop-shadow">{benefit}</span>
+                <span className="text-xs text-nidra-indigo/80">{benefit}</span>
               </div>
             ))}
           </div>
           
+          {/* Image placeholder area */}
+          <div className="relative h-32 mb-4 rounded-xl overflow-hidden bg-white/30 backdrop-blur-sm">
+            <img 
+              src={imagePlaceholder} 
+              alt={title}
+              className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-4xl opacity-40">{icon}</span>
+            </div>
+          </div>
+          
           <Link
-            href={href}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/90 backdrop-blur-sm rounded-full text-nidra-indigo font-medium border border-prakash-gold/50 hover:bg-prakash-gold hover:text-white transition-all group/link"
+            href={href || '#'}
+            className="mt-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full text-nidra-indigo font-medium border border-prakash-gold/30 hover:bg-prakash-gold hover:text-white transition-all group/link"
             onClick={() => play('clickPrimary')}
           >
             Learn More
@@ -95,8 +106,8 @@ export default function ServiceCard3DEnhanced({
         </div>
         
         {/* Floating rings */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full border border-prakash-gold/20 animate-spin-slow pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full border border-sacred-saffron/20 animate-reverse-spin pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full border border-prakash-gold/20 animate-spin-slow" />
+        <div className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full border border-sacred-saffron/20 animate-reverse-spin" />
       </div>
     </motion.div>
   );

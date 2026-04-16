@@ -9,18 +9,15 @@ let ambientMusic: Howl | null = null;
 // State
 let isMuted = false;
 let isAmbientPlaying = false;
-let volume = 0.6; // default 60%
+let volume = 0.6;
 const listeners: (() => void)[] = [];
 
-// Notify all subscribers of state change
-function notifyListeners() {
-  listeners.forEach(l => l());
-}
-
-// Initialize UI sounds on demand (silent placeholders)
+// Initialize UI sounds on demand
 function getUISound(soundId: string): Howl | null {
   if (typeof window === 'undefined') return null;
   if (!uiSounds[soundId]) {
+    // Use simple oscillator-based sounds or tiny audio files
+    // For now, we'll create silent placeholders – replace with real files later
     uiSounds[soundId] = new Howl({
       src: ['/audio/ui-click.webm'], // fallback
       volume: 0.3,
@@ -35,7 +32,7 @@ function initAmbient() {
   ambientMusic = new Howl({
     src: ['/audio/vastu-ui-sounds.webm'], // user uploaded file
     loop: true,
-    volume: volume * 0.7, // ambient slightly quieter than UI
+    volume: volume * 0.4, // ambient slightly quieter
     preload: true,
     onplay: () => {
       isAmbientPlaying = true;
@@ -52,48 +49,28 @@ function initAmbient() {
   });
 }
 
-// Singleton sound manager
 export const soundManager = {
-  // Play a sound (UI or ambient)
   play(soundId: string) {
     if (isMuted) return;
     if (soundId === 'ambient') {
       initAmbient();
       ambientMusic?.play();
     } else {
-      getUISound(soundId)?.play();
+      // UI sounds – optional, can be added later
+      // getUISound(soundId)?.play();
     }
   },
 
-  // Spatial audio (simulated – same as play for now)
-  playSpatial(soundId: string, x: number, y: number, z: number = 0) {
-    this.play(soundId);
-  },
-
-  // Start ambient (called by SoundController)
   startAmbient() {
+    if (isMuted) return;
     initAmbient();
-    if (!isMuted) {
-      ambientMusic?.play();
-    }
+    ambientMusic?.play();
   },
 
-  // Stop ambient
   stopAmbient() {
     ambientMusic?.pause();
   },
 
-  // Toggle ambient play/pause
-  toggleAmbient() {
-    initAmbient();
-    if (ambientMusic?.playing()) {
-      ambientMusic.pause();
-    } else {
-      if (!isMuted) ambientMusic?.play();
-    }
-  },
-
-  // Toggle global mute
   toggleMute() {
     isMuted = !isMuted;
     Howler.mute(isMuted);
@@ -101,19 +78,24 @@ export const soundManager = {
     return isMuted;
   },
 
-  // State getters
+  toggleAmbient() {
+    initAmbient();
+    if (ambientMusic?.playing()) {
+      ambientMusic.pause();
+    } else {
+      ambientMusic?.play();
+    }
+  },
+
   isMutedState() { return isMuted; },
   isAmbientPlaying() { return isAmbientPlaying; },
   getVolume() { return volume; },
 
-  // Volume control
   setVolume(vol: number) {
     volume = vol;
     Howler.volume(vol);
-    if (ambientMusic) ambientMusic.volume(vol * 0.7);
   },
 
-  // Subscribe to state changes
   subscribe(listener: () => void) {
     listeners.push(listener);
     return () => {
@@ -121,12 +103,10 @@ export const soundManager = {
       if (index > -1) listeners.splice(index, 1);
     };
   },
+
+  notifyListeners() {
+    listeners.forEach(l => l());
+  },
 };
 
-// Auto-initialize ambient when module loads (but don't play yet)
-if (typeof window !== 'undefined') {
-  initAmbient();
-  // Set default volume to 60%
-  Howler.volume(0.6);
-  soundManager.setVolume(0.6);
-}
+// Auto-start ambient when user first interacts? No, let SoundController handle it.

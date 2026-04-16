@@ -2,7 +2,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Header from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 import SmoothScroll from '@/components/global/ScrollSmoother';
 import { LuxuryCursor } from '@/components/global/LuxuryCursor';
 import { SoundController } from '@/components/global/SoundController';
@@ -166,7 +165,6 @@ export default function AboutPage() {
           <AboutContent />
           <FinalCTA />
         </main>
-        <Footer />
       </SmoothScroll>
     </>
   );

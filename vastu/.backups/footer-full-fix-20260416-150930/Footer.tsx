@@ -107,6 +107,7 @@ export default function Footer() {
       <h2 id="footer-heading" className="sr-only">Footer</h2>
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-prakash-gold/20">
+          {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="font-serif text-2xl text-white hover:text-prakash-gold transition">
               VedicUrja<span className="text-prakash-gold">.</span>
@@ -132,6 +133,8 @@ export default function Footer() {
               ))}
             </div>
           </div>
+
+          {/* Company */}
           <div>
             <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Company</h3>
             <ul className="space-y-2">
@@ -144,6 +147,8 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+
+          {/* Services */}
           <div>
             <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Services</h3>
             <ul className="space-y-2">
@@ -156,6 +161,8 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+
+          {/* Learn & Dashboard */}
           <div>
             <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Learn</h3>
             <ul className="space-y-2 mb-6">
@@ -178,6 +185,8 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+
+          {/* Contact */}
           <div>
             <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Connect</h3>
             <ul className="space-y-2 text-sm text-white/70">
@@ -196,6 +205,8 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+
+        {/* Bottom Bar */}
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-white/50">
           <p>{copyright}</p>
           <div className="flex space-x-6 mt-4 md:mt-0">

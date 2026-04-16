@@ -1,0 +1,360 @@
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import Header from '@/components/layout/Header';
+import SmoothScroll from '@/components/global/ScrollSmoother';
+import { LuxuryCursor } from '@/components/global/LuxuryCursor';
+import { SoundController } from '@/components/global/SoundController';
+import { MagneticButton } from '@/components/global/MagneticButton';
+import PaymentSimulationModal from '@/components/ui/PaymentSimulationModal';
+import MeetingRoom from '@/components/sections/dashboard/MeetingRoom';
+import CountdownTimer from '@/components/ui/CountdownTimer';
+import { TestimonialsSlider } from '@/components/sections/home/TestimonialsSlider';
+import AnimatedText, { GradientText } from '@/components/ui/AnimatedText';
+import Mandala3D from '@/components/svg/Mandala3D';
+import FloatingParticles from '@/components/svg/FloatingParticles';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/lib/supabaseClient';
+
+interface AvailabilitySlot {
+  id: string;
+  start_time: string;
+  end_time: string;
+  is_booked: boolean;
+}
+
+interface Consultation {
+  id: string;
+  scheduled_at: string;
+  status: string;
+  meeting_url: string | null;
+  payment_status: string;
+}
+
+// ----------------------------------------------------------------------
+// Section 1: Hero
+// ----------------------------------------------------------------------
+function HeroSection({ onCtaClick }: { onCtaClick: () => void }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  return (
+    <motion.section ref={ref} style={{ opacity }} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-vastu-parchment via-white to-vastu-parchment">
+      <Mandala3D />
+      <FloatingParticles />
+      <motion.div style={{ y }} className="container mx-auto px-4 sm:px-6 relative z-10 text-center">
+        <motion.span initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} className="text-sacred-saffron uppercase tracking-[0.3em] text-xs sm:text-sm mb-4 block">
+          Virtual Consultation
+        </motion.span>
+        <AnimatedText text="Ancient Wisdom." className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-nidra-indigo mb-2" />
+        <GradientText text="Modern Connection." className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl mb-6 block" />
+        <motion.p initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.3 }} className="text-base sm:text-lg md:text-xl text-nidra-indigo/70 max-w-2xl mx-auto mb-10">
+          Experience personalised Vastu guidance from anywhere in the world via secure video call.
+        </motion.p>
+        <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.6 }} className="flex flex-col sm:flex-row gap-4 justify-center">
+          <MagneticButton className="luxury-button"><button onClick={onCtaClick}>Book Your Session</button></MagneticButton>
+          <MagneticButton className="bg-transparent border-2 border-prakash-gold text-nidra-indigo hover:bg-prakash-gold/10 px-8 py-4 rounded-full">
+            <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior:'smooth' })}>How It Works</button>
+          </MagneticButton>
+        </motion.div>
+      </motion.div>
+    </motion.section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 2: Problem Agitation
+// ----------------------------------------------------------------------
+function ProblemSection() {
+  return (
+    <section className="py-20 bg-white">
+      <div className="container mx-auto px-4 max-w-4xl text-center">
+        <AnimatedText text="Traveling to a consultant is impractical." className="font-serif text-3xl md:text-4xl text-nidra-indigo mb-6" />
+        <p className="text-lg text-nidra-indigo/70">You deserve trusted Vastu guidance without leaving the comfort of your home or office.</p>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 3: Solution Introduction
+// ----------------------------------------------------------------------
+function SolutionSection() {
+  return (
+    <section className="py-20 bg-vastu-stone/30">
+      <div className="container mx-auto px-4 max-w-4xl text-center">
+        <AnimatedText text="Introducing VedicUrja Virtual Consultations." className="font-serif text-3xl md:text-4xl text-nidra-indigo mb-6" />
+        <p className="text-lg text-nidra-indigo/70">Personalised Vastu analysis, screen sharing, and real‑time remedies – all online, all secure.</p>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 4: How It Works
+// ----------------------------------------------------------------------
+function HowItWorksSection() {
+  const steps = ['Choose a time slot', 'Complete payment', 'Receive meeting link', 'Join & transform'];
+  return (
+    <section id="how-it-works" className="py-24 bg-white">
+      <div className="container mx-auto px-4">
+        <AnimatedText text="How It Works" className="font-serif text-4xl text-center text-nidra-indigo mb-16" />
+        <div className="flex flex-wrap justify-center gap-8 max-w-5xl mx-auto">
+          {steps.map((step, i) => (
+            <div key={i} className="text-center w-40">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-prakash-gold/20 flex items-center justify-center text-2xl font-bold text-nidra-indigo">{i+1}</div>
+              <p className="font-medium text-nidra-indigo">{step}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 5: Meet Acharya
+// ----------------------------------------------------------------------
+function MeetAcharyaSection() {
+  return (
+    <section className="py-20 bg-gradient-to-b from-white to-vastu-parchment">
+      <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-12 max-w-5xl">
+        <div className="md:w-1/3 flex justify-center">
+          <div className="w-48 h-48 rounded-full bg-gradient-to-br from-sacred-saffron to-prakash-gold flex items-center justify-center text-6xl shadow-2xl">🧘</div>
+        </div>
+        <div className="md:w-2/3 text-center md:text-left">
+          <AnimatedText text="Acharya KK Nagaich ji" className="font-serif text-3xl text-nidra-indigo mb-4" />
+          <p className="text-sacred-saffron uppercase tracking-wider text-sm mb-4">4th Generation Vastu Guru</p>
+          <p className="text-nidra-indigo/70">With over four decades of experience and 500+ clients globally, Acharya brings authentic Vedic wisdom to every consultation.</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 6: Benefits
+// ----------------------------------------------------------------------
+function BenefitsSection() {
+  const benefits = ['No travel required', 'Session recording available', 'Screen share floor plans', 'Post‑consult summary'];
+  return (
+    <section className="py-20 bg-vastu-stone/20">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <AnimatedText text="Why Virtual?" className="font-serif text-3xl text-center text-nidra-indigo mb-12" />
+        <div className="grid grid-cols-2 gap-6">
+          {benefits.map((b,i) => (
+            <div key={i} className="flex items-center gap-3 bg-white/50 p-4 rounded-xl"><span className="text-prakash-gold text-xl">✓</span><span>{b}</span></div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 7: Pricing
+// ----------------------------------------------------------------------
+function PricingSection({ onSelect, selectedPrice }: { onSelect: (price:number)=>void; selectedPrice:number|null }) {
+  const plans = [{ name:'Single Session', price:2499 }, { name:'3‑Session Package', price:5999, popular:true }, { name:'Premium Annual', price:14999 }];
+  return (
+    <section className="py-24 bg-white">
+      <div className="container mx-auto px-4">
+        <AnimatedText text="Transparent Pricing" className="font-serif text-4xl text-center text-nidra-indigo mb-4" />
+        <p className="text-center text-nidra-indigo/60 mb-12">Choose the plan that fits your needs</p>
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {plans.map(p => (
+            <div key={p.name} className={`relative p-6 rounded-2xl border ${p.popular ? 'border-prakash-gold shadow-xl bg-white' : 'border-prakash-gold/20 bg-white/80'}`}>
+              {p.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-sacred-saffron text-white px-4 py-1 rounded-full text-xs">Most Popular</span>}
+              <h3 className="font-serif text-xl mb-2">{p.name}</h3>
+              <p className="text-3xl font-bold text-nidra-indigo">₹{p.price}</p>
+              <button onClick={() => onSelect(p.price)} className={`mt-4 w-full py-2 rounded-full ${selectedPrice===p.price ? 'bg-prakash-gold text-white' : 'border border-prakash-gold text-prakash-gold'}`}>
+                {selectedPrice===p.price ? 'Selected' : 'Select'}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 8: Scheduler
+// ----------------------------------------------------------------------
+function SchedulerSection({ onSlotSelect, selectedPrice, slots, loadingSlots }: any) {
+  const events = slots.map((s:any) => ({ id:s.id, title:'Available', start:s.start_time, end:s.end_time, backgroundColor:'#C88A5D', borderColor:'#C88A5D', extendedProps:{ slot:s } }));
+  return (
+    <section id="scheduler" className="py-24 bg-vastu-parchment">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <AnimatedText text="Choose Your Time" className="font-serif text-4xl text-center text-nidra-indigo mb-4" />
+        <p className="text-center text-nidra-indigo/60 mb-8">All times shown in your local timezone</p>
+        {selectedPrice ? (
+          loadingSlots ? <div className="text-center py-12"><div className="w-8 h-8 border-4 border-prakash-gold border-t-transparent rounded-full animate-spin mx-auto" /></div> :
+          <FullCalendar plugins={[dayGridPlugin,timeGridPlugin,interactionPlugin]} initialView="timeGridWeek" headerToolbar={{ left:'prev,next today', center:'title', right:'timeGridWeek,dayGridMonth' }} events={events} eventClick={(info) => onSlotSelect(info.event.extendedProps.slot)} height="auto" slotMinTime="09:00:00" slotMaxTime="17:00:00" allDaySlot={false} />
+        ) : <p className="text-center text-nidra-indigo/60">Please select a pricing plan above first.</p>}
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 9: Testimonials
+// ----------------------------------------------------------------------
+function TestimonialsSection() {
+  return (
+    <section className="py-24 bg-white overflow-hidden">
+      <div className="container mx-auto px-4">
+        <AnimatedText text="Trusted by Seekers Worldwide" className="font-serif text-4xl text-center text-nidra-indigo mb-4" />
+        <TestimonialsSlider />
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 10: FAQ
+// ----------------------------------------------------------------------
+function FAQSection() {
+  const faqs = [
+    { q:'What if I’m not tech‑savvy?', a:'We’ll guide you through a simple one‑click join process.' },
+    { q:'Is virtual consultation as effective?', a:'Yes, Acharya uses screen sharing to analyse floor plans just like in person.' },
+    { q:'Can I reschedule?', a:'You can reschedule up to 24 hours before your session.' },
+  ];
+  return (
+    <section className="py-20 bg-vastu-stone/20">
+      <div className="container mx-auto px-4 max-w-3xl">
+        <AnimatedText text="Frequently Asked Questions" className="font-serif text-3xl text-center text-nidra-indigo mb-8" />
+        <div className="space-y-4">
+          {faqs.map((f,i) => (
+            <details key={i} className="bg-white p-4 rounded-xl"><summary className="font-medium cursor-pointer">{f.q}</summary><p className="mt-2 text-nidra-indigo/70">{f.a}</p></details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 11: Final CTA
+// ----------------------------------------------------------------------
+function FinalCTA({ onCtaClick }: { onCtaClick: ()=>void }) {
+  return (
+    <section className="py-32 bg-nidra-indigo text-white text-center">
+      <div className="container mx-auto px-4">
+        <AnimatedText text="Ready to Harmonise Your Space?" className="font-serif text-4xl md:text-6xl mb-6 text-white" />
+        <p className="text-xl text-white/80 max-w-3xl mx-auto mb-10">Book your virtual consultation now and begin your transformation.</p>
+        <button onClick={onCtaClick} className="bg-prakash-gold hover:bg-sacred-saffron text-nidra-indigo font-bold px-10 py-5 rounded-full text-lg transition">Book Your Session</button>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Section 12: Upcoming Meeting
+// ----------------------------------------------------------------------
+function UpcomingMeetingSection({ consultation }: { consultation: Consultation }) {
+  return (
+    <section id="upcoming-meeting" className="py-24 bg-white">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <AnimatedText text="Your Upcoming Meeting" className="font-serif text-3xl text-center text-nidra-indigo mb-8" />
+        <div className="bg-vastu-stone/20 p-6 rounded-2xl">
+          <p className="text-center mb-4">Scheduled for {new Date(consultation.scheduled_at).toLocaleString()}</p>
+          <CountdownTimer targetDate={consultation.scheduled_at} />
+          <div className="mt-8">
+            <MeetingRoom consultationId={consultation.id} scheduledAt={consultation.scheduled_at} status={consultation.status} meetingUrl={consultation.meeting_url} />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Main Page
+// ----------------------------------------------------------------------
+export default function BookingsPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  const [selectedPrice, setSelectedPrice] = useState<number|null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot|null>(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [upcomingConsultation, setUpcomingConsultation] = useState<Consultation|null>(null);
+  const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(true);
+  const [bookingInProgress, setBookingInProgress] = useState(false);
+
+  useEffect(() => {
+    const fetchSlots = async () => {
+      setLoadingSlots(true);
+      const { data } = await supabase.from('consultation_availability').select('*').eq('is_booked', false).order('start_time');
+      setSlots(data || []);
+      setLoadingSlots(false);
+    };
+    fetchSlots();
+    const channel = supabase.channel('slots').on('postgres_changes', { event:'*', schema:'public', table:'consultation_availability' }, fetchSlots).subscribe();
+    return () => { channel.unsubscribe(); };
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from('consultations').select('*').eq('client_id', user.id).in('status', ['scheduled','in_progress']).order('scheduled_at').limit(1).single().then(({ data }) => { if (data) setUpcomingConsultation(data); });
+  }, [user]);
+
+  const scrollToScheduler = () => document.getElementById('scheduler')?.scrollIntoView({ behavior:'smooth' });
+
+  const handleSelectPlan = (price: number) => { setSelectedPrice(price); scrollToScheduler(); };
+
+  const handleSlotSelect = (slot: AvailabilitySlot) => {
+    if (!user) { router.push('/signin?redirect=/bookings'); return; }
+    setSelectedSlot(slot); setShowPayment(true);
+  };
+
+  const handlePaymentSuccess = async () => {
+    if (!user || !selectedSlot || !selectedPrice) return;
+    setBookingInProgress(true);
+    try {
+      const meetingId = `vedicurja-${Date.now()}`;
+      const meetingUrl = `https://embed.videosdk.live/rooms/${meetingId}`;
+      const { data: consultation, error } = await supabase.from('consultations').insert({
+        client_id: user.id, scheduled_at: selectedSlot.start_time, duration_minutes: 60, status: 'scheduled', meeting_url: meetingUrl, payment_status: 'paid',
+      }).select().single();
+      if (error) throw error;
+      await supabase.from('consultation_availability').update({ is_booked: true, consultation_id: consultation.id }).eq('id', selectedSlot.id);
+      setUpcomingConsultation(consultation);
+      setShowPayment(false);
+      document.getElementById('upcoming-meeting')?.scrollIntoView({ behavior:'smooth' });
+    } catch { alert('Booking failed.'); } finally { setBookingInProgress(false); }
+  };
+
+  if (authLoading) return <div className="flex h-screen items-center justify-center"><div className="w-12 h-12 border-4 border-prakash-gold border-t-transparent rounded-full animate-spin" /></div>;
+
+  return (
+    <>
+      <LuxuryCursor /><SoundController /><Header /><SmoothScroll>
+        <main className="relative bg-vastu-parchment">
+          <HeroSection onCtaClick={scrollToScheduler} />
+          <ProblemSection />
+          <SolutionSection />
+          <HowItWorksSection />
+          <MeetAcharyaSection />
+          <BenefitsSection />
+          <PricingSection onSelect={handleSelectPlan} selectedPrice={selectedPrice} />
+          <SchedulerSection onSlotSelect={handleSlotSelect} selectedPrice={selectedPrice} slots={slots} loadingSlots={loadingSlots} />
+          <TestimonialsSection />
+          <FAQSection />
+          <FinalCTA onCtaClick={scrollToScheduler} />
+          {upcomingConsultation && <UpcomingMeetingSection consultation={upcomingConsultation} />}
+        </main>
+      </SmoothScroll>
+      <PaymentSimulationModal isOpen={showPayment} onClose={() => setShowPayment(false)} tool="Virtual Consultation" amount={selectedPrice||2499} onSuccess={handlePaymentSuccess} userId={user?.id} />
+      {bookingInProgress && <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center"><div className="bg-white p-8 rounded-2xl text-center"><div className="w-12 h-12 border-4 border-prakash-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" /><p>Confirming your booking...</p></div></div>}
+    </>
+  );
+}

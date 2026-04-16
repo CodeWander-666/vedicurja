@@ -57,7 +57,7 @@ export default function LuxuryHeroButton({
       className="inline-block"
     >
       <Link href={href} className={`${baseClasses} ${variant === 'primary' ? primaryClasses : secondaryClasses} ${className}`}>
-        <span className="relative z-10 flex items-center justify-center gap-2 font-semibold tracking-wide">
+        <span className="relative z-10 flex items-center justify-center gap-2">
           {children}
           {variant === 'primary' && (
             <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

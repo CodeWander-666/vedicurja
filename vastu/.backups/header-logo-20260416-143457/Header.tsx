@@ -14,7 +14,6 @@ export default function Header() {
   const { user, profile } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [imgError, setImgError] = useState(false);
 
   const menuItems = [
     { key: 'home', href: '/' },
@@ -41,22 +40,8 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 z-30 bg-vastu-parchment/95 backdrop-blur-xl shadow-md border-b border-prakash-gold/20">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
-          {!imgError ? (
-            <Image
-              src="/logo/logo.png"
-              alt="VedicUrja"
-              width={140}
-              height={36}
-              className="h-9 w-auto"
-              onError={() => setImgError(true)}
-              priority
-            />
-          ) : (
-            <span className="font-serif text-2xl vedic-gradient-text">
-              VedicUrja<span className="text-sacred-saffron">.</span>
-            </span>
-          )}
+        <Link href="/" className="font-serif text-2xl vedic-gradient-text">
+          VedicUrja<span className="text-sacred-saffron">.</span>
         </Link>
 
         {/* Desktop Navigation */}

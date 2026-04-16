@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 const platforms = [
-  { name: 'Instagram', icon: '📷', handle: '@vedicurja', color: 'from-pink-500 to-purple-500', href: 'https://www.instagram.com/vedicurja?igsh=MTFkb2NkbGJuamp2bg%3D%3D' },
-  { name: 'Facebook', icon: '📘', handle: 'VedicUrja', color: 'from-blue-600 to-blue-800', href: 'https://www.facebook.com/krishna.nagaich.7/' },
-  { name: 'YouTube', icon: '▶️', handle: '@vedicurja', color: 'from-red-500 to-red-700', href: 'https://www.youtube.com/@vedicurja1589' },
+  { name: 'Instagram', icon: '📷', handle: '@vedicurja', color: 'from-pink-500 to-purple-500', href: 'https://instagram.com/vedicurja' },
+  { name: 'Facebook', icon: '📘', handle: 'VedicUrja', color: 'from-blue-600 to-blue-800', href: 'https://facebook.com/vedicurja' },
+  { name: 'YouTube', icon: '▶️', handle: '@vedicurja', color: 'from-red-500 to-red-700', href: 'https://youtube.com/@vedicurja' },
   { name: 'LinkedIn', icon: '💼', handle: 'VedicUrja', color: 'from-blue-500 to-blue-700', href: 'https://linkedin.com/company/vedicurja' },
 ];
 

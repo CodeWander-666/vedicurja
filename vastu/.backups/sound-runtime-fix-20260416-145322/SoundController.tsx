@@ -13,13 +13,9 @@ export function SoundController() {
       setIsMuted(soundManager.isMutedState());
     });
 
-    // Auto-start ambient music when component mounts (site loads)
-    // But respect browser autoplay policies – will start after first user interaction
-    // We attempt to play immediately; if blocked, it will play on first click anywhere.
+    // Auto-start ambient on first user interaction? We'll let the button control it.
+    // But we can start it muted initially.
     soundManager.startAmbient();
-
-    // Also set initial volume to 60%
-    soundManager.setVolume(0.6);
 
     return unsubscribe;
   }, []);
