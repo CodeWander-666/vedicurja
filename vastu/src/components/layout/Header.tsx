@@ -16,7 +16,6 @@ export default function Header() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -51,7 +50,19 @@ export default function Header() {
   const isAdmin = profile?.role === 'admin';
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-sacred-saffron/95 via-kumkuma-red/95 to-prakash-gold/95 backdrop-blur-xl shadow-md border-b border-white/30">
+    <header
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 30,
+        background: 'linear-gradient(to right, rgba(255,153,51,0.95), rgba(193,0,0,0.95), rgba(232,185,96,0.95))',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+        borderBottom: '1px solid rgba(255,255,255,0.3)',
+      }}
+    >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
@@ -176,7 +187,7 @@ export default function Header() {
               aria-hidden="true"
             />
 
-            {/* Menu Content – Inline gradient guarantees visibility */}
+            {/* Menu Content */}
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
