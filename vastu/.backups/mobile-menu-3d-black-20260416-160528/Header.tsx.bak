@@ -164,7 +164,7 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl border-2 border-prakash-gold/50 z-50 lg:hidden flex flex-col"
+              className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl z-50 lg:hidden flex flex-col"
             >
               {/* Header */}
               <div className="p-6 flex justify-between items-center border-b border-white/20">
@@ -196,7 +196,7 @@ export default function Header() {
                     <Link
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full px-6 py-4 bg-white/80 backdrop-blur-sm border border-prakash-gold/50 rounded-2xl text-nidra-indigo font-medium text-lg shadow-lg hover:bg-white hover:shadow-lg transition-colors"
+                      className="block w-full px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/30 rounded-2xl text-white font-medium text-lg shadow-lg hover:bg-white/20 transition-colors"
                     >
                       {t(`common.${item.key}`)}
                     </Link>
@@ -212,7 +212,7 @@ export default function Header() {
                       <Link
                         href="/dashboard"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-center py-3 bg-white/80 backdrop-blur-sm border border-prakash-gold/50 rounded-full text-nidra-indigo font-medium"
+                        className="block w-full text-center py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-medium"
                       >
                         Dashboard
                       </Link>
@@ -222,7 +222,7 @@ export default function Header() {
                         <Link
                           href="/admin"
                           onClick={() => setMobileMenuOpen(false)}
-                          className="block w-full text-center py-3 bg-white/90 backdrop-blur-sm border border-prakash-gold rounded-full text-nidra-indigo font-medium"
+                          className="block w-full text-center py-3 bg-white/30 backdrop-blur-sm border border-white/50 rounded-full text-white font-medium"
                         >
                           Admin Panel
                         </Link>
@@ -233,7 +233,7 @@ export default function Header() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       style={{ transformStyle: 'preserve-3d' }}
-                      className="block w-full text-center py-3 bg-transparent border border-prakash-gold rounded-full text-nidra-indigo font-medium"
+                      className="block w-full text-center py-3 bg-transparent border border-white/50 rounded-full text-white font-medium"
                     >
                       Sign Out
                     </motion.button>

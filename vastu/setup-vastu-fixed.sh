@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# VedicUrja – SoundController with Guided Tooltip (Play/Pause/Mute)
+# VedicUrja – Mobile Menu: 3D Black Text + Glowing Red‑Orange Border
 # =============================================================================
 set -euo pipefail
 
@@ -9,122 +9,45 @@ info()  { echo -e "${BLUE}ℹ️  $1${NC}"; }
 success() { echo -e "${GREEN}✅ $1${NC}"; }
 warn()  { echo -e "${YELLOW}⚠️  $1${NC}"; }
 
-BACKUP_DIR=".backups/sound-guide-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BACKUP_DIR"
-info "Backups saved to $BACKUP_DIR"
-
-SOUND_CONTROLLER="src/components/global/SoundController.tsx"
-if [ -f "$SOUND_CONTROLLER" ]; then
-    cp "$SOUND_CONTROLLER" "$BACKUP_DIR/SoundController.tsx.bak"
-    info "Backup created."
+HEADER_FILE="src/components/layout/Header.tsx"
+if [ ! -f "$HEADER_FILE" ]; then
+    echo "❌ Header.tsx not found."
+    exit 1
 fi
 
+BACKUP_DIR=".backups/mobile-menu-3d-black-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BACKUP_DIR"
+cp "$HEADER_FILE" "$BACKUP_DIR/Header.tsx.bak"
+info "Backup created in $BACKUP_DIR"
+
 # -----------------------------------------------------------------------------
-# Rewrite SoundController with guided tooltip
+# Patch the mobile menu: black text, 3D buttons, glowing border
 # -----------------------------------------------------------------------------
-cat > "$SOUND_CONTROLLER" <<'EOF'
-'use client';
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { soundManager } from '@/lib/audio/soundManager';
+# 1. Change navigation items to black text with 3D hover/press
+sed -i '/\/\* Navigation Items – 3D Magnetic Buttons \*\//,/\/\* Footer Actions \*\// {
+    s|text-white|text-nidra-indigo|g
+    s|bg-white/10|bg-white/80|g
+    s|border-white/30|border-prakash-gold/50|g
+    s|hover:bg-white/20|hover:bg-white hover:shadow-lg|g
+}' "$HEADER_FILE"
 
-export function SoundController() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [showGuide, setShowGuide] = useState(false);
+# 2. Change footer buttons (Dashboard, Admin Panel, Sign In, Consult) to black text
+sed -i '/\/\* Footer Actions \*\//,/<\/AnimatePresence>/ {
+    s|text-white|text-nidra-indigo|g
+    s|bg-white/20|bg-white/80|g
+    s|bg-white/30|bg-white/90|g
+    s|border-white/30|border-prakash-gold/50|g
+    s|border-white/50|border-prakash-gold|g
+    s|bg-white text-nidra-indigo|bg-white text-nidra-indigo|g
+}' "$HEADER_FILE"
 
-  useEffect(() => {
-    const unsubscribe = soundManager.subscribe(() => {
-      setIsPlaying(soundManager.isAmbientPlaying());
-      setIsMuted(soundManager.isMutedState());
-    });
-    soundManager.startAmbient();
-    soundManager.setVolume(0.6);
+# 3. Add glowing red‑orange border to the drawer
+sed -i '/className="fixed inset-y-0 right-0 w-80 max-w-\[85vw\] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl z-50 lg:hidden flex flex-col"/ {
+    s|shadow-2xl|shadow-2xl border-2 border-prakash-gold/50|g
+}' "$HEADER_FILE"
 
-    // Show guide on first visit
-    const hasSeenGuide = localStorage.getItem('vedicurja_sound_guide');
-    if (!hasSeenGuide) {
-      setShowGuide(true);
-      localStorage.setItem('vedicurja_sound_guide', 'true');
-      // Auto-hide after 5 seconds
-      setTimeout(() => setShowGuide(false), 5000);
-    }
-
-    return unsubscribe;
-  }, []);
-
-  const triggerToast = (message: string) => {
-    setToastMessage(message);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 1500);
-  };
-
-  const toggleAmbient = () => {
-    const nowPlaying = soundManager.isAmbientPlaying();
-    soundManager.toggleAmbient();
-    triggerToast(nowPlaying ? 'Music paused' : 'Music playing');
-  };
-
-  const toggleMute = () => {
-    const nowMuted = soundManager.isMutedState();
-    soundManager.toggleMute();
-    triggerToast(nowMuted ? 'Sound unmuted' : 'Sound muted');
-  };
-
-  return (
-    <>
-      {/* Guide Tooltip */}
-      <AnimatePresence>
-        {showGuide && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="fixed bottom-20 left-20 z-50 px-4 py-2 bg-nidra-indigo/90 backdrop-blur-sm text-white text-sm rounded-full shadow-lg whitespace-nowrap pointer-events-none"
-          >
-            👆 Click to play/pause · Right‑click to mute
-            <div className="absolute -bottom-1 left-6 w-3 h-3 bg-nidra-indigo/90 rotate-45" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Main Button */}
-      <motion.button
-        onClick={toggleAmbient}
-        onContextMenu={(e) => { e.preventDefault(); toggleMute(); }}
-        className="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm border-2 border-prakash-gold shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
-        title="Click to play/pause · Right‑click to mute"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        animate={isPlaying && !isMuted ? { boxShadow: '0 0 20px #E8B960' } : {}}
-      >
-        <span className={`text-2xl transition-all duration-300 ${isPlaying && !isMuted ? 'animate-spin-slow text-prakash-gold' : 'text-nidra-indigo/60'}`}>
-          ॐ
-        </span>
-      </motion.button>
-
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {showToast && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 left-6 z-50 px-4 py-2 bg-nidra-indigo/90 backdrop-blur-sm text-white text-sm rounded-full shadow-lg"
-          >
-            {toastMessage}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-}
-export default SoundController;
-EOF
-
-success "SoundController updated with first‑visit guide tooltip."
+# 4. Ensure all 3D transform styles are preserved (already present)
+success "Mobile menu updated: black text, 3D buttons, glowing red‑orange border."
 
 # -----------------------------------------------------------------------------
 # Clean and rebuild
@@ -138,10 +61,10 @@ else
 fi
 
 echo ""
-success "🎉 Sound controller now guides users:"
-echo "   - First‑time visitors see 'Click to play/pause · Right‑click to mute'"
-echo "   - Button glows when music is playing"
-echo "   - Toast confirms play/pause and mute actions"
+success "🎉 Mobile hamburger menu now features:"
+echo "   - Black text on all buttons"
+echo "   - 3D hover and press animations"
+echo "   - Glowing red‑orange gradient border"
 echo ""
 echo "📦 Backups saved in $BACKUP_DIR"
-echo "🚀 Run 'npm run dev' to test the guided experience."
+echo "🚀 Run 'npm run dev' to see the polished mobile menu."
