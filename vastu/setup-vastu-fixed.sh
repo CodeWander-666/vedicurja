@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# VedicUrja – Complete Header Rewrite (Syntax Error Free, Professional Mobile Menu)
+# VedicUrja – Full‑Screen Mobile Overlay Menu (Blurred Background, Bold Text, All Buttons)
 # =============================================================================
 set -euo pipefail
 
@@ -9,7 +9,7 @@ info()  { echo -e "${BLUE}ℹ️  $1${NC}"; }
 success() { echo -e "${GREEN}✅ $1${NC}"; }
 warn()  { echo -e "${YELLOW}⚠️  $1${NC}"; }
 
-BACKUP_DIR=".backups/header-rewrite-$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR=".backups/header-fullscreen-overlay-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 
 HEADER_FILE="src/components/layout/Header.tsx"
@@ -19,7 +19,7 @@ if [ -f "$HEADER_FILE" ]; then
 fi
 
 # -----------------------------------------------------------------------------
-# Write completely new, syntax‑correct Header.tsx
+# Write Header with Full‑Screen Overlay Mobile Menu (Blurred Background)
 # -----------------------------------------------------------------------------
 cat > "$HEADER_FILE" <<'EOF'
 'use client';
@@ -54,6 +54,7 @@ export default function Header() {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setProfileMenuOpen(false);
+    setMobileMenuOpen(false);
     window.location.href = '/';
   };
 
@@ -152,13 +153,12 @@ export default function Header() {
             <Link href="/contact">{t('common.consult')}</Link>
           </MagneticButton>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Menu Toggle (Hamburger) */}
           <motion.button
             onClick={() => setMobileMenuOpen(true)}
             className="lg:hidden relative w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
-            whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}
+            whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
             aria-label="Menu"
           >
             <div className="w-6 h-5 flex flex-col justify-between">
@@ -170,57 +170,77 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu Drawer – Solid Red‑Orange Gradient + 3D Black Text Buttons */}
+      {/* Full‑Screen Mobile Overlay Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 lg:hidden flex items-center justify-center"
+          >
+            {/* Blurred Background Overlay */}
+            <div 
+              className="absolute inset-0 bg-nidra-indigo/80 backdrop-blur-xl"
               onClick={() => setMobileMenuOpen(false)}
             />
-            {/* Drawer */}
+            
+            {/* Menu Content */}
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl border-2 border-prakash-gold/50 ring-1 ring-white/20 z-50 lg:hidden flex flex-col"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative z-10 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto rounded-3xl bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl border-2 border-prakash-gold/50 p-6"
             >
-              {/* Drawer Header */}
-              <div className="p-6 flex justify-between items-center border-b border-white/20">
-                <span className="font-serif text-2xl text-white drop-shadow-md">VedicUrja</span>
+              {/* Close Button */}
+              <div className="flex justify-end mb-4">
                 <motion.button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
+                  className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 >
-                  <span className="text-white text-xl">✕</span>
+                  <span className="text-white text-2xl">✕</span>
                 </motion.button>
               </div>
 
-              {/* Navigation Items – Black Text, 3D Effects */}
-              <nav className="flex-1 overflow-y-auto p-6 space-y-2">
+              {/* User Profile Section (if logged in) */}
+              {user && (
+                <div className="mb-6 p-4 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/70 bg-white/30 flex items-center justify-center">
+                      {avatarUrl ? (
+                        <Image src={avatarUrl} alt="Profile" width={56} height={56} className="object-cover" />
+                      ) : (
+                        <span className="text-white text-2xl font-medium">{userInitial}</span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-white font-bold text-lg">{profile?.full_name || 'User'}</p>
+                      <p className="text-white/80 text-sm truncate">{user.email}</p>
+                      {isAdmin && <span className="text-xs bg-white/30 text-white px-2 py-0.5 rounded-full">Admin</span>}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Navigation Links – Bold, Large, High Contrast */}
+              <nav className="space-y-3 mb-6">
                 {menuItems.map((item, index) => (
                   <motion.div
                     key={item.key}
-                    initial={{ opacity: 0, x: 20 }}
+                    initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    whileHover={{ scale: 1.03, rotateX: 2, rotateY: -3 }}
+                    whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    style={{ transformStyle: 'preserve-3d', perspective: 1000 }}
-                    className="w-full"
                   >
                     <Link
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full px-6 py-4 bg-white/85 backdrop-blur-sm border border-prakash-gold/40 rounded-2xl text-nidra-indigo font-medium text-lg shadow-md hover:bg-white hover:shadow-lg hover:border-prakash-gold transition-all"
+                      className="block w-full px-6 py-5 bg-white/90 backdrop-blur-sm border-2 border-white rounded-2xl text-nidra-indigo font-bold text-xl shadow-lg hover:bg-white hover:shadow-xl transition-all"
                     >
                       {t(`common.${item.key}`)}
                     </Link>
@@ -228,63 +248,52 @@ export default function Header() {
                 ))}
               </nav>
 
-              {/* Footer Actions – Black Text, Premium White Backgrounds */}
-              <div className="p-6 border-t border-white/20 space-y-3">
+              {/* Action Buttons – Full Width, Bold */}
+              <div className="space-y-3 border-t border-white/30 pt-4">
                 {user ? (
                   <>
-                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-center py-3.5 bg-white/90 backdrop-blur-sm border border-prakash-gold/40 rounded-full text-nidra-indigo font-medium shadow-md hover:bg-white hover:shadow-lg transition-all"
-                      >
-                        Dashboard
-                      </Link>
-                    </motion.div>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full text-center py-4 bg-white text-nidra-indigo rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all"
+                    >
+                      Dashboard
+                    </Link>
                     {isAdmin && (
-                      <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }} className="mt-3">
-                        <Link
-                          href="/admin"
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="block w-full text-center py-3.5 bg-white/90 backdrop-blur-sm border border-prakash-gold rounded-full text-nidra-indigo font-medium shadow-md hover:bg-white hover:shadow-lg transition-all"
-                        >
-                          🛡️ Admin Panel
-                        </Link>
-                      </motion.div>
+                      <Link
+                        href="/admin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block w-full text-center py-4 bg-white/90 text-nidra-indigo rounded-full font-bold text-lg border-2 border-white shadow-lg hover:bg-white transition-all"
+                      >
+                        🛡️ Admin Panel
+                      </Link>
                     )}
-                    <motion.button
-                      onClick={() => { handleSignOut(); setMobileMenuOpen(false); }}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.98 }}
-                      style={{ transformStyle: 'preserve-3d' }}
-                      className="block w-full text-center py-3.5 mt-3 bg-transparent border border-white/60 rounded-full text-white font-medium hover:bg-white/10 transition-all"
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full text-center py-4 bg-transparent border-2 border-white text-white rounded-full font-bold text-lg hover:bg-white/10 transition-all"
                     >
                       Sign Out
-                    </motion.button>
+                    </button>
                   </>
                 ) : (
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
-                    <Link
-                      href="/signin"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full text-center py-3.5 bg-white text-nidra-indigo rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
-                    >
-                      Sign In
-                    </Link>
-                  </motion.div>
-                )}
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }} className="mt-3">
                   <Link
-                    href="/contact"
+                    href="/signin"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full text-center py-3.5 bg-white text-nidra-indigo rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                    className="block w-full text-center py-4 bg-white text-nidra-indigo rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all"
                   >
-                    {t('common.consult')}
+                    Sign In
                   </Link>
-                </motion.div>
+                )}
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full text-center py-4 bg-white text-nidra-indigo rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all"
+                >
+                  {t('common.consult')}
+                </Link>
               </div>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
     </header>
@@ -292,7 +301,7 @@ export default function Header() {
 }
 EOF
 
-success "Header.tsx completely rewritten with correct syntax and professional mobile menu."
+success "Header rewritten with full‑screen overlay mobile menu (blurred background, bold text, all buttons)."
 
 # -----------------------------------------------------------------------------
 # Clean and rebuild
@@ -306,11 +315,12 @@ else
 fi
 
 echo ""
-success "🎉 Header is now 100% syntax‑error free and includes:"
-echo "   - Desktop navigation with authentication awareness"
-echo "   - Red‑orange gradient mobile drawer with glowing border"
-echo "   - All mobile menu items with black text on premium white backgrounds"
-echo "   - 3D hover/press animations on every interactive element"
+success "🎉 Mobile menu is now a luxurious full‑screen overlay:"
+echo "   - Blurred dark background for focus"
+echo "   - All navigation links with bold, large typography"
+echo "   - User profile section when logged in"
+echo "   - All action buttons (Dashboard, Admin, Sign Out, Sign In, Consult)"
+echo "   - Smooth animations and high contrast"
 echo ""
 echo "📦 Old Header backed up in $BACKUP_DIR"
-echo "🚀 Run 'npm run dev' to see the flawless header."
+echo "🚀 Run 'npm run dev' to experience the premium mobile menu."
