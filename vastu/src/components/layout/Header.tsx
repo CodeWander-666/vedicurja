@@ -100,14 +100,14 @@ export default function Header() {
                     className="absolute right-0 mt-3 w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/30 overflow-hidden"
                   >
                     <div className="p-3 border-b border-white/20">
-                      <p className="font-medium text-white">{profile?.full_name || 'User'}</p>
-                      <p className="text-xs text-white/60 truncate">{user.email}</p>
+                      <p className="font-medium text-nidra-indigo">{profile?.full_name || 'User'}</p>
+                      <p className="text-xs text-nidra-indigo/60 truncate">{user.email}</p>
                     </div>
-                    <Link href="/dashboard" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-white">Dashboard</Link>
-                    <Link href="/dashboard/library" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-white">My Library</Link>
-                    <Link href="/dashboard/account" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-white">Account Settings</Link>
+                    <Link href="/dashboard" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-nidra-indigo">Dashboard</Link>
+                    <Link href="/dashboard/library" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-nidra-indigo">My Library</Link>
+                    <Link href="/dashboard/account" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-nidra-indigo">Account Settings</Link>
                     {isAdmin && (
-                      <Link href="/admin" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition border-t border-white/20 text-white">🛡️ Admin Panel</Link>
+                      <Link href="/admin" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition border-t border-white/20 text-nidra-indigo">🛡️ Admin Panel</Link>
                     )}
                     <button onClick={handleSignOut} className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 transition">Sign Out</button>
                   </motion.div>
@@ -115,7 +115,7 @@ export default function Header() {
               </AnimatePresence>
             </div>
           ) : (
-            <MagneticButton className="bg-white/20 backdrop-blur-sm border border-white/50 text-white font-medium px-5 py-2 rounded-full hover:bg-white hover:text-white transition">
+            <MagneticButton className="bg-white/20 backdrop-blur-sm border border-white/50 text-white font-medium px-5 py-2 rounded-full hover:bg-white hover:text-nidra-indigo transition">
               <Link href="/signin">Sign In</Link>
             </MagneticButton>
           )}
@@ -124,88 +124,145 @@ export default function Header() {
             <Link href="/admin" className="hidden sm:block text-xs bg-white/30 backdrop-blur-sm text-white px-3 py-1 rounded-full border border-white/50">Admin</Link>
           )}
 
-          <MagneticButton className="hidden sm:block bg-white text-white font-medium px-5 py-2 rounded-full shadow-md hover:shadow-lg transition">
+          <MagneticButton className="hidden sm:block bg-white text-nidra-indigo font-medium px-5 py-2 rounded-full shadow-md hover:shadow-lg transition">
             <Link href="/contact">{t('common.consult')}</Link>
           </MagneticButton>
 
-          {/* Mobile Menu Toggle with 3D Animation */}
+          {/* Mobile Menu Toggle – 3D Animated */}
           <motion.button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/50"
-            whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
+            onClick={() => setMobileMenuOpen(true)}
+            className="lg:hidden relative w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
+            whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}
             whileTap={{ scale: 0.9 }}
-            transition={{ type: 'spring', stiffness: 300 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
             aria-label="Menu"
           >
             <div className="w-6 h-5 flex flex-col justify-between">
-              <span className={`block w-full h-0.5 bg-white transition-transform ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-              <span className={`block w-full h-0.5 bg-white transition-opacity ${mobileMenuOpen ? 'opacity-0' : ''}`} />
-              <span className={`block w-full h-0.5 bg-white transition-transform ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+              <span className="block w-full h-0.5 bg-white rounded-full" />
+              <span className="block w-full h-0.5 bg-white rounded-full" />
+              <span className="block w-full h-0.5 bg-white rounded-full" />
             </div>
           </motion.button>
         </div>
       </div>
 
-      {/* Mobile Menu Drawer – Red‑Orange Gradient */}
+      {/* Mobile Menu Drawer – Solid Red‑Orange Gradient with 3D Menu Items */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25 }}
-            className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl z-40 lg:hidden"
-          >
-            <div className="p-6 h-full flex flex-col">
-              <div className="flex justify-between items-center mb-8">
-                <span className="font-serif text-xl text-white drop-shadow">Menu</span>
-                <button onClick={() => setMobileMenuOpen(false)} className="text-2xl text-white/80">✕</button>
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl z-50 lg:hidden flex flex-col"
+            >
+              {/* Header */}
+              <div className="p-6 flex justify-between items-center border-b border-white/20">
+                <span className="font-serif text-2xl text-white drop-shadow-md">VedicUrja</span>
+                <motion.button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                >
+                  <span className="text-white text-xl">✕</span>
+                </motion.button>
               </div>
 
-              <nav className="flex flex-col space-y-4">
-                {menuItems.map((item) => (
-                  <Link
+              {/* Navigation Items – 3D Magnetic Buttons */}
+              <nav className="flex-1 overflow-y-auto p-6 space-y-2">
+                {menuItems.map((item, index) => (
+                  <motion.div
                     key={item.key}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-lg text-white/90 hover:text-white py-2 border-b border-white/20"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    whileHover={{ scale: 1.02, rotateX: 2, rotateY: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    style={{ transformStyle: 'preserve-3d', perspective: 1000 }}
+                    className="w-full"
                   >
-                    {t(`common.${item.key}`)}
-                  </Link>
+                    <Link
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/30 rounded-2xl text-white font-medium text-lg shadow-lg hover:bg-white/20 transition-colors"
+                    >
+                      {t(`common.${item.key}`)}
+                    </Link>
+                  </motion.div>
                 ))}
               </nav>
 
-              <div className="mt-auto pt-8 space-y-3">
+              {/* Footer Actions */}
+              <div className="p-6 border-t border-white/20 space-y-3">
                 {user ? (
                   <>
-                    <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white/20 backdrop-blur-sm text-white rounded-full">Dashboard</Link>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block w-full text-center py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-medium"
+                      >
+                        Dashboard
+                      </Link>
+                    </motion.div>
                     {isAdmin && (
-                      <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white/30 backdrop-blur-sm text-white rounded-full border border-white/50">Admin Panel</Link>
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
+                        <Link
+                          href="/admin"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block w-full text-center py-3 bg-white/30 backdrop-blur-sm border border-white/50 rounded-full text-white font-medium"
+                        >
+                          Admin Panel
+                        </Link>
+                      </motion.div>
                     )}
-                    <button onClick={handleSignOut} className="block w-full text-center py-3 text-white border border-white/50 rounded-full">Sign Out</button>
+                    <motion.button
+                      onClick={() => { handleSignOut(); setMobileMenuOpen(false); }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      style={{ transformStyle: 'preserve-3d' }}
+                      className="block w-full text-center py-3 bg-transparent border border-white/50 rounded-full text-white font-medium"
+                    >
+                      Sign Out
+                    </motion.button>
                   </>
                 ) : (
-                  <Link href="/signin" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white text-white rounded-full font-medium">Sign In</Link>
+                  <>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
+                      <Link
+                        href="/signin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block w-full text-center py-3 bg-white text-nidra-indigo rounded-full font-medium shadow-lg"
+                      >
+                        Sign In
+                      </Link>
+                    </motion.div>
+                  </>
                 )}
-                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white text-white rounded-full font-medium shadow-lg">
-                  {t('common.consult')}
-                </Link>
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ transformStyle: 'preserve-3d' }}>
+                  <Link
+                    href="/contact"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full text-center py-3 bg-white text-nidra-indigo rounded-full font-medium shadow-lg"
+                  >
+                    {t('common.consult')}
+                  </Link>
+                </motion.div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Overlay for mobile menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden"
-            onClick={() => setMobileMenuOpen(false)}
-          />
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

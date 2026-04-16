@@ -8,7 +8,6 @@ export function SoundController() {
   const [isMuted, setIsMuted] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [showGuide, setShowGuide] = useState(false);
 
   useEffect(() => {
     const unsubscribe = soundManager.subscribe(() => {
@@ -17,16 +16,6 @@ export function SoundController() {
     });
     soundManager.startAmbient();
     soundManager.setVolume(0.6);
-
-    // Show guide on first visit
-    const hasSeenGuide = localStorage.getItem('vedicurja_sound_guide');
-    if (!hasSeenGuide) {
-      setShowGuide(true);
-      localStorage.setItem('vedicurja_sound_guide', 'true');
-      // Auto-hide after 5 seconds
-      setTimeout(() => setShowGuide(false), 5000);
-    }
-
     return unsubscribe;
   }, []);
 
@@ -50,35 +39,16 @@ export function SoundController() {
 
   return (
     <>
-      {/* Guide Tooltip */}
-      <AnimatePresence>
-        {showGuide && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="fixed bottom-20 left-20 z-50 px-4 py-2 bg-nidra-indigo/90 backdrop-blur-sm text-white text-sm rounded-full shadow-lg whitespace-nowrap pointer-events-none"
-          >
-            👆 Click to play/pause · Right‑click to mute
-            <div className="absolute -bottom-1 left-6 w-3 h-3 bg-nidra-indigo/90 rotate-45" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Main Button */}
-      <motion.button
+      <button
         onClick={toggleAmbient}
         onContextMenu={(e) => { e.preventDefault(); toggleMute(); }}
-        className="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm border-2 border-prakash-gold shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
-        title="Click to play/pause · Right‑click to mute"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        animate={isPlaying && !isMuted ? { boxShadow: '0 0 20px #E8B960' } : {}}
+        className="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm border border-prakash-gold shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+        title="Click to play/pause ambient music. Right-click to mute/unmute."
       >
-        <span className={`text-2xl transition-all duration-300 ${isPlaying && !isMuted ? 'animate-spin-slow text-prakash-gold' : 'text-nidra-indigo/60'}`}>
+        <span className={`text-2xl ${isPlaying && !isMuted ? 'animate-spin-slow text-prakash-gold' : 'text-nidra-indigo/60'}`}>
           ॐ
         </span>
-      </motion.button>
+      </button>
 
       {/* Toast Notification */}
       <AnimatePresence>
