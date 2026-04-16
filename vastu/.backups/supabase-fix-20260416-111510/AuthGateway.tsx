@@ -17,7 +17,6 @@ const languages = [
 
 export default function AuthGateway({ children }: { children: React.ReactNode }) {
   const { user, profile, loading } = useAuth();
-  const router = useRouter();
   const [step, setStep] = useState<'loading' | 'auth' | 'language' | 'ready'>('loading');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,7 +37,6 @@ export default function AuthGateway({ children }: { children: React.ReactNode })
     if (loading) return;
     if (skipAuth) {
       setStep('ready');
-    if (profile?.role === 'admin') { router.push('/admin'); return; }
       return;
     }
     if (!user) {
@@ -47,7 +45,6 @@ export default function AuthGateway({ children }: { children: React.ReactNode })
       setStep('language');
     } else {
       setStep('ready');
-    if (profile?.role === 'admin') { router.push('/admin'); return; }
     }
   }, [user, loading, skipAuth]);
 
@@ -93,14 +90,12 @@ export default function AuthGateway({ children }: { children: React.ReactNode })
       supabase.from('profiles').update({ language_preference: langCode }).eq('id', user.id);
     }
     setStep('ready');
-    if (profile?.role === 'admin') { router.push('/admin'); return; }
   };
 
   const handleContinueAsGuest = () => {
     localStorage.setItem('vedicurja_skip_auth', 'true');
     setSkipAuth(true);
     setStep('ready');
-    if (profile?.role === 'admin') { router.push('/admin'); return; }
   };
 
   const handleClose = () => handleContinueAsGuest();

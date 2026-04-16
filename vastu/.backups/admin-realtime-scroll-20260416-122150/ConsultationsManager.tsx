@@ -1,26 +1,5 @@
-#!/bin/bash
-# =============================================================================
-# VedicUrja – Fix Slot Realtime & Calendar Scroll in Admin
-# =============================================================================
-set -euo pipefail
-
-GREEN='\033[0;32m'; BLUE='\033[0;34m'; YELLOW='\033[1;33m'; NC='\033[0m'
-info()  { echo -e "${BLUE}ℹ️  $1${NC}"; }
-success() { echo -e "${GREEN}✅ $1${NC}"; }
-warn()  { echo -e "${YELLOW}⚠️  $1${NC}"; }
-
-BACKUP_DIR=".backups/admin-realtime-scroll-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BACKUP_DIR"
-info "Backups saved to $BACKUP_DIR"
-
-backup_file() { [ -f "$1" ] && cp "$1" "$BACKUP_DIR/"; }
-
-COMPONENT="src/components/admin/ConsultationsManager.tsx"
-backup_file "$COMPONENT"
-
-cat > "$COMPONENT" <<'EOF'
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -53,7 +32,17 @@ export function ConsultationsManager() {
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
   const [actionFeedback, setActionFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
-  const fetchData = useCallback(async () => {
+  useEffect(() => {
+    fetchData();
+    const channel = supabase
+      .channel('admin-consult')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'consultation_availability' }, fetchData)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'consultations' }, fetchData)
+      .subscribe();
+    return () => { channel.unsubscribe(); };
+  }, []);
+
+  const fetchData = async () => {
     const [slotsRes, consultsRes] = await Promise.all([
       supabase.from('consultation_availability').select('*').order('start_time'),
       supabase.from('consultations').select('*').order('scheduled_at', { ascending: false }),
@@ -61,22 +50,7 @@ export function ConsultationsManager() {
     setSlots(slotsRes.data || []);
     setConsultations(consultsRes.data || []);
     setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-    const channel = supabase
-      .channel('admin-consult-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'consultation_availability' }, () => fetchData())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'consultations' }, () => fetchData())
-      .subscribe((status) => {
-        if (status === 'SUBSCRIBED') console.log('✅ Admin realtime subscribed');
-        if (status === 'CHANNEL_ERROR') console.error('Realtime error');
-      });
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [fetchData]);
+  };
 
   const showFeedback = (type: 'success' | 'error', message: string) => {
     setActionFeedback({ type, message });
@@ -138,28 +112,25 @@ export function ConsultationsManager() {
 
       <section>
         <h2 className="font-serif text-2xl mb-4">Manage Availability Slots</h2>
-        <div className="bg-white p-4 rounded-xl shadow-md overflow-x-auto">
-          <div style={{ minWidth: '800px' }}>
-            <FullCalendar
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-              initialView="timeGridWeek"
-              headerToolbar={{ left: 'prev,next today', center: 'title', right: 'timeGridWeek,dayGridMonth' }}
-              events={events}
-              eventClick={(info) => setSelectedSlot(info.event.extendedProps.slot)}
-              selectable={true}
-              select={(info) => {
-                handleAddSlot(info.startStr, info.endStr);
-                info.view.calendar.unselect();
-              }}
-              height="auto"
-              slotMinTime="09:00:00"
-              slotMaxTime="17:00:00"
-              allDaySlot={false}
-              slotDuration="01:00:00"
-              slotLabelInterval="01:00"
-              scrollTime="09:00:00"
-            />
-          </div>
+        <div className="bg-white p-4 rounded-xl shadow-md">
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            initialView="timeGridWeek"
+            headerToolbar={{ left: 'prev,next today', center: 'title', right: 'timeGridWeek,dayGridMonth' }}
+            events={events}
+            eventClick={(info) => setSelectedSlot(info.event.extendedProps.slot)}
+            selectable={true}
+            select={(info) => {
+              handleAddSlot(info.startStr, info.endStr);
+              info.view.calendar.unselect();
+            }}
+            height="auto"
+            slotMinTime="09:00:00"
+            slotMaxTime="17:00:00"
+            allDaySlot={false}
+            slotDuration="01:00:00"
+            slotLabelInterval="01:00"
+          />
           {selectedSlot && (
             <div className="mt-4 p-4 bg-gray-50 rounded-lg flex flex-wrap items-center justify-between gap-4">
               <span className="text-sm">
@@ -219,7 +190,7 @@ export function ConsultationsManager() {
           <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowMeeting(false)}>
             <motion.div initial={{ scale:0.9 }} animate={{ scale:1 }} exit={{ scale:0.9 }} className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-auto" onClick={e => e.stopPropagation()}>
               <div className="p-4 border-b flex justify-between items-center"><h3 className="font-serif text-xl">Meeting</h3><button onClick={() => setShowMeeting(false)} className="text-2xl">&times;</button></div>
-              <div className="p-4"><MeetingRoom consultationId={selectedConsultation.id} scheduledAt={selectedConsultation.scheduled_at} status={selectedConsultation.status} meetingUrl={selectedConsultation.meeting_url ?? null} onMeetingEnd={() => setShowMeeting(false)} /></div>
+              <div className="p-4"><MeetingRoom consultationId={selectedConsultation.id} scheduledAt={selectedConsultation.scheduled_at} status={selectedConsultation.status} meetingUrl={selectedConsultation.meeting_url} onMeetingEnd={() => setShowMeeting(false)} /></div>
             </motion.div>
           </motion.div>
         )}
@@ -227,27 +198,3 @@ export function ConsultationsManager() {
     </div>
   );
 }
-EOF
-
-success "Updated ConsultationsManager with realtime fix and calendar scroll."
-
-# -----------------------------------------------------------------------------
-# Build verification
-# -----------------------------------------------------------------------------
-rm -rf .next
-info "Running production build..."
-if npm run build; then
-    success "✅ Build successful!"
-else
-    error "Build failed – check logs."
-    exit 1
-fi
-
-echo ""
-success "🎉 Slot management is now industry‑grade:"
-echo "   - Real‑time updates work without refresh"
-echo "   - Calendar has proper scroll view"
-echo "   - Feedback toasts for all actions"
-echo ""
-echo "📦 Backups saved in $BACKUP_DIR"
-echo "🚀 Run 'npm run dev' and test the Virtual Consult tab."

@@ -17,7 +17,6 @@ export default function ConfirmPage() {
       return;
     }
 
-    // Exchange the code for a session – this works with PKCE
     supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
       if (error) {
         setStatus('error');

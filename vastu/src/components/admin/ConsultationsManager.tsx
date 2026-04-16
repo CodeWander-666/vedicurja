@@ -1,24 +1,3 @@
-#!/bin/bash
-# =============================================================================
-# VedicUrja – Fix Slot Realtime & Calendar Scroll in Admin
-# =============================================================================
-set -euo pipefail
-
-GREEN='\033[0;32m'; BLUE='\033[0;34m'; YELLOW='\033[1;33m'; NC='\033[0m'
-info()  { echo -e "${BLUE}ℹ️  $1${NC}"; }
-success() { echo -e "${GREEN}✅ $1${NC}"; }
-warn()  { echo -e "${YELLOW}⚠️  $1${NC}"; }
-
-BACKUP_DIR=".backups/admin-realtime-scroll-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BACKUP_DIR"
-info "Backups saved to $BACKUP_DIR"
-
-backup_file() { [ -f "$1" ] && cp "$1" "$BACKUP_DIR/"; }
-
-COMPONENT="src/components/admin/ConsultationsManager.tsx"
-backup_file "$COMPONENT"
-
-cat > "$COMPONENT" <<'EOF'
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import FullCalendar from '@fullcalendar/react';
@@ -227,27 +206,3 @@ export function ConsultationsManager() {
     </div>
   );
 }
-EOF
-
-success "Updated ConsultationsManager with realtime fix and calendar scroll."
-
-# -----------------------------------------------------------------------------
-# Build verification
-# -----------------------------------------------------------------------------
-rm -rf .next
-info "Running production build..."
-if npm run build; then
-    success "✅ Build successful!"
-else
-    error "Build failed – check logs."
-    exit 1
-fi
-
-echo ""
-success "🎉 Slot management is now industry‑grade:"
-echo "   - Real‑time updates work without refresh"
-echo "   - Calendar has proper scroll view"
-echo "   - Feedback toasts for all actions"
-echo ""
-echo "📦 Backups saved in $BACKUP_DIR"
-echo "🚀 Run 'npm run dev' and test the Virtual Consult tab."

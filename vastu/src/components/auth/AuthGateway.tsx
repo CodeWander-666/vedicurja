@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -16,6 +17,7 @@ const languages = [
 ];
 
 export default function AuthGateway({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const { user, profile, loading } = useAuth();
   const [step, setStep] = useState<'loading' | 'auth' | 'language' | 'ready'>('loading');
   const [email, setEmail] = useState('');
@@ -44,9 +46,14 @@ export default function AuthGateway({ children }: { children: React.ReactNode })
     } else if (!localStorage.getItem('vedicurja_language')) {
       setStep('language');
     } else {
+      // Redirect admin users to /admin
+      if (profile?.role === 'admin') {
+        router.push('/admin');
+        return;
+      }
       setStep('ready');
     }
-  }, [user, loading, skipAuth]);
+  }, [user, profile, loading, skipAuth, router]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,6 +95,11 @@ export default function AuthGateway({ children }: { children: React.ReactNode })
     localStorage.setItem('vedicurja_language', langCode);
     if (user) {
       supabase.from('profiles').update({ language_preference: langCode }).eq('id', user.id);
+    }
+    // Admin check after language selection
+    if (profile?.role === 'admin') {
+      router.push('/admin');
+      return;
     }
     setStep('ready');
   };

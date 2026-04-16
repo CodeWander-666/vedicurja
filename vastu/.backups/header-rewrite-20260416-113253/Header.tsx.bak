@@ -16,14 +16,14 @@ export default function Header() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const menuItems = [
-    { key: 'home', href: '/' },
-    { key: 'freeAITools', href: '/free-tools' },
-    { key: 'services', href: '/services' },
-    { key: 'bookings', href: '/bookings' },
-    { key: 'learnVastu', href: '/learn-vastu' },
-    { key: 'blogs', href: '/insights' },
-    { key: 'testimonials', href: '/client-stories' },
-    { key: 'about', href: '/about' },
+    { key: "home", href: "/" },
+    { key: "freeAITools", href: "/free-tools" },
+    { key: "services", href: "/services" },
+    { key: "bookings", href: "/bookings" },
+    { key: "learnVastu", href: "/learn-vastu" },
+    { key: "blogs", href: "/insights" },
+    { key: "testimonials", href: "/client-stories" },
+    { key: "about", href: "/about" },
   ];
 
   const handleSignOut = async () => {
@@ -34,7 +34,6 @@ export default function Header() {
 
   const avatarUrl = profile?.avatar_url;
   const userInitial = profile?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U';
-  const isAdmin = profile?.role === 'admin';
 
   return (
     <header className="fixed top-0 left-0 right-0 z-30 bg-vastu-parchment/95 backdrop-blur-xl shadow-md border-b border-prakash-gold/20">
@@ -62,6 +61,9 @@ export default function Header() {
           <LanguageSwitcher />
 
           {user ? (
+            {profile?.role === "admin" && (
+              <Link href="/admin" className="hidden sm:block text-xs bg-prakash-gold/20 text-prakash-gold px-3 py-1 rounded-full border border-prakash-gold/50">Admin</Link>
+            )}
             /* Logged In – Profile Avatar with Dropdown */
             <div className="relative">
               <button
@@ -97,6 +99,9 @@ export default function Header() {
                     </div>
                     <Link
                       href="/dashboard"
+                    {profile?.role === "admin" && (
+                      <Link href="/admin" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition">Admin Panel</Link>
+                    )}
                       onClick={() => setProfileMenuOpen(false)}
                       className="block px-4 py-3 hover:bg-prakash-gold/10 transition"
                     >
@@ -116,15 +121,6 @@ export default function Header() {
                     >
                       Account Settings
                     </Link>
-                    {isAdmin && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setProfileMenuOpen(false)}
-                        className="block px-4 py-3 hover:bg-prakash-gold/10 transition border-t border-prakash-gold/20"
-                      >
-                        🛡️ Admin Panel
-                      </Link>
-                    )}
                     <button
                       onClick={handleSignOut}
                       className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 transition"
@@ -140,13 +136,6 @@ export default function Header() {
             <MagneticButton className="luxury-button !py-2 !px-5 text-sm">
               <Link href="/signin">Sign In</Link>
             </MagneticButton>
-          )}
-
-          {/* Admin Badge (quick access) */}
-          {isAdmin && (
-            <Link href="/admin" className="hidden sm:block text-xs bg-prakash-gold/20 text-prakash-gold px-3 py-1 rounded-full border border-prakash-gold/50">
-              Admin
-            </Link>
           )}
 
           {/* Consult CTA (always visible) */}
@@ -205,23 +194,20 @@ export default function Header() {
 
               <div className="mt-auto pt-8 space-y-3">
                 {user ? (
+            {profile?.role === "admin" && (
+              <Link href="/admin" className="hidden sm:block text-xs bg-prakash-gold/20 text-prakash-gold px-3 py-1 rounded-full border border-prakash-gold/50">Admin</Link>
+            )}
                   <>
                     <Link
                       href="/dashboard"
+                    {profile?.role === "admin" && (
+                      <Link href="/admin" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition">Admin Panel</Link>
+                    )}
                       onClick={() => setMobileMenuOpen(false)}
                       className="block w-full text-center py-3 bg-vastu-stone rounded-full"
                     >
                       Dashboard
                     </Link>
-                    {isAdmin && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-center py-3 bg-prakash-gold/20 text-prakash-gold rounded-full border border-prakash-gold/50"
-                      >
-                        Admin Panel
-                      </Link>
-                    )}
                     <button
                       onClick={handleSignOut}
                       className="block w-full text-center py-3 text-red-500 border border-red-200 rounded-full"

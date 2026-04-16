@@ -5,6 +5,7 @@ let _supabase: SupabaseClient | null = null;
 
 export const getSupabase = (): SupabaseClient => {
   if (typeof window === 'undefined') {
+    // Server-side – return a dummy client (static export never runs server-side)
     return {} as SupabaseClient;
   }
 
@@ -18,7 +19,7 @@ export const getSupabase = (): SupabaseClient => {
     _supabase = createBrowserClient(url, key, {
       cookieOptions: {
         name: 'sb-auth',
-        maxAge: 60 * 60 * 24 * 30, // 30 days
+        lifetime: 60 * 60 * 24 * 30, // 30 days
         domain: '',
         path: '/',
         sameSite: 'lax',

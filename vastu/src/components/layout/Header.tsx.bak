@@ -16,14 +16,14 @@ export default function Header() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const menuItems = [
-    { key: 'home', href: '/' },
-    { key: 'about', href: '/about' },
-    { key: 'freeAITools', href: '/free-tools' },
-    { key: 'services', href: '/services' },
-    { key: 'bookings', href: '/bookings' },
-    { key: 'learnVastu', href: '/learn-vastu' },
-    { key: 'blogs', href: '/insights' },
-    { key: 'testimonials', href: '/client-stories' },
+    { key: "home", href: "/" },
+    { key: "freeAITools", href: "/free-tools" },
+    { key: "services", href: "/services" },
+    { key: "bookings", href: "/bookings" },
+    { key: "learnVastu", href: "/learn-vastu" },
+    { key: "blogs", href: "/insights" },
+    { key: "testimonials", href: "/client-stories" },
+    { key: "about", href: "/about" },
   ];
 
   const handleSignOut = async () => {

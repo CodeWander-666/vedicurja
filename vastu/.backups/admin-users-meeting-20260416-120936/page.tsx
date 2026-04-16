@@ -8,7 +8,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabaseClient';
 import { HomeSection, FreeTool, Service, Course, BlogPost, Testimonial, Consultation, Payment, Profile } from '@/types/admin';
 import { ConsultationsManager } from '@/components/admin/ConsultationsManager';
-import MeetingRoom from '@/components/sections/dashboard/MeetingRoom';
 
 const tabs = [
   'Dashboard',
@@ -238,118 +237,20 @@ function PaymentsTab() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Users Tab (Enhanced with Meeting Join)                               */
+/* Users Tab                                                           */
 /* ------------------------------------------------------------------ */
 function UsersTab() {
-  const { items: users, loading } = useRealtimeContent<Profile>('profiles', 'created_at', false);
-  const { items: consultations } = useRealtimeContent<Consultation>('consultations', 'scheduled_at', false);
+  const { items, loading } = useRealtimeContent<Profile>('profiles', 'created_at', false);
   const [updating, setUpdating] = useState<string | null>(null);
-  const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
-  const [showMeeting, setShowMeeting] = useState(false);
-
-  const toggleRole = async (id: string, currentRole: string) => {
-    setUpdating(id);
-    await supabase.from('profiles').update({ role: currentRole === 'admin' ? 'client' : 'admin' }).eq('id', id);
-    setUpdating(null);
-  };
-
-  const getUserConsultation = (userId: string) => {
-    return consultations.find(c => c.client_id === userId && (c.status === 'scheduled' || c.status === 'in_progress'));
-  };
-
-  const handleJoinMeeting = (consultation: Consultation) => {
-    setSelectedConsultation(consultation);
-    setShowMeeting(true);
-  };
-
+  const toggleRole = async (id: string, currentRole: string) => { setUpdating(id); await supabase.from('profiles').update({ role: currentRole === 'admin' ? 'client' : 'admin' }).eq('id', id); setUpdating(null); };
   if (loading) return <LoadingSpinner />;
-
   return (
-    <>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b">
-              <th className="py-2 text-left">Name</th>
-              <th className="py-2 text-left">Role</th>
-              <th className="py-2 text-left">Coins</th>
-              <th className="py-2 text-left">Joined</th>
-              <th className="py-2 text-left">Meeting</th>
-              <th className="py-2 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(u => {
-              const upcoming = getUserConsultation(u.id);
-              return (
-                <tr key={u.id} className="border-b">
-                  <td className="py-2">{u.full_name || '—'}</td>
-                  <td className="py-2">{u.role}</td>
-                  <td className="py-2">{u.coins}</td>
-                  <td className="py-2">{new Date(u.created_at).toLocaleDateString()}</td>
-                  <td className="py-2">
-                    {upcoming ? (
-                      <button
-                        onClick={() => handleJoinMeeting(upcoming)}
-                        className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full hover:bg-green-200"
-                      >
-                        Join Meeting
-                      </button>
-                    ) : (
-                      <span className="text-gray-400 text-xs">—</span>
-                    )}
-                  </td>
-                  <td className="py-2">
-                    <button
-                      onClick={() => toggleRole(u.id, u.role)}
-                      disabled={updating === u.id}
-                      className="text-xs bg-prakash-gold/20 px-2 py-1 rounded"
-                    >
-                      Toggle Admin
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Meeting Preview Modal */}
-      <AnimatePresence>
-        {showMeeting && selectedConsultation && (
-          <motion.div
-            initial={{ opacity:0 }}
-            animate={{ opacity:1 }}
-            exit={{ opacity:0 }}
-            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
-            onClick={() => setShowMeeting(false)}
-          >
-            <motion.div
-              initial={{ scale:0.9 }}
-              animate={{ scale:1 }}
-              exit={{ scale:0.9 }}
-              className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-auto"
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="p-4 border-b flex justify-between items-center">
-                <h3 className="font-serif text-xl">Meeting with {users.find(u => u.id === selectedConsultation.client_id)?.full_name || 'Client'}</h3>
-                <button onClick={() => setShowMeeting(false)} className="text-2xl">&times;</button>
-              </div>
-              <div className="p-4">
-                <MeetingRoom
-                  consultationId={selectedConsultation.id}
-                  scheduledAt={selectedConsultation.scheduled_at}
-                  status={selectedConsultation.status}
-                  meetingUrl={selectedConsultation.meeting_url ?? null}
-                  onMeetingEnd={() => setShowMeeting(false)}
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead><tr className="border-b"><th className="py-2 text-left">Name</th><th className="py-2 text-left">Role</th><th className="py-2 text-left">Coins</th><th className="py-2 text-left">Joined</th><th className="py-2 text-left">Actions</th></tr></thead>
+        <tbody>{items.map(u => <tr key={u.id} className="border-b"><td className="py-2">{u.full_name || '—'}</td><td className="py-2">{u.role}</td><td className="py-2">{u.coins}</td><td className="py-2">{new Date(u.created_at).toLocaleDateString()}</td><td className="py-2"><button onClick={() => toggleRole(u.id, u.role)} disabled={updating === u.id} className="text-xs bg-prakash-gold/20 px-2 py-1 rounded">Toggle Admin</button></td></tr>)}</tbody>
+      </table>
+    </div>
   );
 }
 
