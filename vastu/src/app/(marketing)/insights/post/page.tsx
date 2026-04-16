@@ -50,7 +50,7 @@ function PostContent() {
             <span>•</span>
             <span>{post.read_time} min read</span>
             <span>•</span>
-            <span>By {post.author_name || 'Acharya Sharma'}</span>
+            <span>By {post.author_name || 'Acharya KK Nagaich ji'}</span>
           </div>
           <h1 className="font-serif text-4xl md:text-5xl text-nidra-indigo mb-6">{post.title}</h1>
           <p className="text-xl text-nidra-indigo/70 italic">{post.excerpt}</p>
@@ -75,7 +75,7 @@ function PostContent() {
         <div className="mt-12 p-6 bg-vastu-stone/20 rounded-2xl border border-prakash-gold/20 flex items-center gap-6">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-prakash-gold to-sacred-saffron flex items-center justify-center text-2xl">🧘</div>
           <div>
-            <p className="font-serif text-lg text-nidra-indigo">{post.author_name || 'Acharya Sharma'}</p>
+            <p className="font-serif text-lg text-nidra-indigo">{post.author_name || 'Acharya KK Nagaich ji'}</p>
             <p className="text-sm text-nidra-indigo/60">4th Generation Vastu Guru. Sharing authentic Vedic wisdom for modern living.</p>
           </div>
         </div>

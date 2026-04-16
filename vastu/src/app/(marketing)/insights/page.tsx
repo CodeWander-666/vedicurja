@@ -29,7 +29,7 @@ function HeroSection() {
         <AnimatedText text="Sacred Archives" className="font-serif text-5xl md:text-7xl lg:text-8xl text-nidra-indigo mb-4" />
         <GradientText text="Ancient Knowledge for Modern Living" className="font-serif text-2xl md:text-3xl mb-6 block" />
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="text-lg text-nidra-indigo/70 max-w-2xl mx-auto">
-          Explore articles on Vastu Shastra, numerology, and Vedic astrology — written by Acharya Sharma.
+          Explore articles on Vastu Shastra, numerology, and Vedic astrology — written by Acharya KK Nagaich ji.
         </motion.p>
       </div>
     </section>
@@ -61,7 +61,7 @@ function FeaturedPost({ post }: { post: BlogPost }) {
               <p className="text-nidra-indigo/70 mb-4">{post.excerpt}</p>
               <div className="flex items-center gap-4 text-sm text-nidra-indigo/50">
                 <span>{post.read_time} min read</span>
-                <span>By {post.author_name || 'Acharya Sharma'}</span>
+                <span>By {post.author_name || 'Acharya KK Nagaich ji'}</span>
               </div>
             </div>
           </motion.div>
@@ -138,7 +138,7 @@ function FinalCTA() {
       <Mandala3D />
       <div className="container mx-auto px-6 relative z-10">
         <AnimatedText text="Ready for Personal Guidance?" className="font-serif text-4xl md:text-5xl text-nidra-indigo mb-6" />
-        <p className="text-lg text-nidra-indigo/70 max-w-2xl mx-auto mb-10">Book a private consultation with Acharya Sharma.</p>
+        <p className="text-lg text-nidra-indigo/70 max-w-2xl mx-auto mb-10">Book a private consultation with Acharya KK Nagaich ji.</p>
         <Link href="/contact" className="luxury-button px-10 py-4 text-lg">Consult Acharya</Link>
       </div>
     </section>

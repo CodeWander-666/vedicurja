@@ -7,7 +7,6 @@ import { useRealtimeContent } from '@/hooks/useRealtimeContent';
 interface HomeSection {
   section_key: string;
   title: string;
-  subtitle: string;
   description: string;
   button_text: string;
   button_link: string;
@@ -17,8 +16,7 @@ interface HomeSection {
 const fallbackData: HomeSection = {
   section_key: 'virtual_consult',
   title: 'Connect with Acharya, Virtually',
-  subtitle: 'Secure video consultation from anywhere',
-  description: 'Experience personalised Vastu guidance.',
+  description: 'Secure video consultation from anywhere in the world.',
   button_text: 'Book Virtual Consultation',
   button_link: '/bookings',
   is_published: true,
@@ -38,15 +36,15 @@ export function VirtualConsultCTA() {
     <motion.section ref={ref} style={{ scale }} className="relative py-32 md:py-40 overflow-hidden">
       <div className="absolute inset-0">
         <video autoPlay loop muted playsInline className="w-full h-full object-cover opacity-30">
-          <source src="https://videos.pexels.com/video-files/3196307/3196307-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+          <source src="/videos/home/virtual-consult-bg.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-nidra-indigo/70" />
       </div>
-      <div className="container mx-auto px-6 relative z-10 text-center text-white">
-        <motion.h2 className="font-serif text-4xl md:text-6xl mb-6">{data.title}</motion.h2>
-        <p className="text-xl text-white/80 max-w-3xl mx-auto mb-10">{data.description}</p>
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center text-white">
+        <motion.h2 className="font-serif text-3xl sm:text-4xl md:text-6xl mb-6">{data.title}</motion.h2>
+        <p className="text-lg sm:text-xl text-white/80 max-w-3xl mx-auto mb-10">{data.description}</p>
         <motion.div whileHover={{ scale: 1.05 }} className="inline-block">
-          <Link href={data.button_link || "#" || '#' || '#'} className="bg-prakash-gold hover:bg-sacred-saffron text-nidra-indigo font-bold px-10 py-5 rounded-full text-lg shadow-2xl transition-all">
+          <Link href={data.button_link || '#'} className="bg-prakash-gold hover:bg-sacred-saffron text-nidra-indigo font-bold px-8 sm:px-10 py-4 sm:py-5 rounded-full text-base sm:text-lg shadow-2xl transition-all">
             {data.button_text}
           </Link>
         </motion.div>

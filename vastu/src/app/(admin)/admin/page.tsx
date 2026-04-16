@@ -7,7 +7,7 @@ import { useRealtimeContent } from '@/hooks/useRealtimeContent';
 import { HomeSection, FreeTool, Service, Course, BlogPost, Testimonial, Consultation, Payment, Profile } from '@/types/admin';
 import { supabase } from '@/lib/supabaseClient';
 
-const tabs = ['Dashboard', 'Home', 'Free Tools', 'Services', 'Courses', 'Blogs', 'Testimonials', 'Bookings', 'Payments', 'Users', 'AI Tools'] as const;
+const tabs = ['Contact Messages', 'Dashboard', 'Home', 'Free Tools', 'Services', 'Courses', 'Blogs', 'Testimonials', 'Bookings', 'Payments', 'Users', 'AI Tools'] as const;
 type Tab = typeof tabs[number];
 
 export default function AdminPage() {
@@ -42,6 +42,7 @@ export default function AdminPage() {
               {activeTab === 'Payments' && <PaymentsTab />}
               {activeTab === 'Users' && <UsersTab />}
               {activeTab === 'AI Tools' && <AIToolsTab />}
+              {activeTab === 'Contact Messages' && <ContactMessagesTab />}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -82,4 +83,26 @@ function AIToolsTab() {
   useEffect(() => { const fetchStats = async () => { const { data, error } = await supabase.rpc('get_tool_usage_stats'); if (!error) setStats(data || []); setLoading(false); }; fetchStats(); }, []);
   if (loading) return <div>Loading stats...</div>;
   return (<div className="space-y-6"><h2 className="font-serif text-2xl">AI Tools Usage Statistics</h2><div className="grid md:grid-cols-3 gap-6">{stats.map((stat) => (<div key={stat.tool_type} className="bg-white p-6 rounded-xl shadow-md border border-prakash-gold/20"><h3 className="font-serif text-xl capitalize">{stat.tool_type.replace('_', ' ')}</h3><div className="mt-4 space-y-2"><p><span className="font-medium">Total Uses:</span> {stat.total_uses}</p><p><span className="font-medium">Unique Users:</span> {stat.unique_users}</p><p><span className="font-medium">Premium Unlocks:</span> {stat.premium_unlocks}</p><p><span className="font-medium">Last Used:</span> {stat.last_used ? new Date(stat.last_used).toLocaleString() : 'Never'}</p></div></div>))}</div><div className="bg-white p-6 rounded-xl shadow-md"><h3 className="font-serif text-xl mb-4">Edit Tool Content</h3><p className="text-nidra-indigo/70">Use the "Free Tools" tab to modify titles, descriptions, and premium pricing.</p></div></div>);
+}
+
+function ContactMessagesTab() {
+  const { items: messages, loading } = useRealtimeContent('contact_messages', 'created_at', false);
+  if (loading) return <div>Loading messages...</div>;
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead><tr className="border-b"><th className="py-2 text-left">Date</th><th>Name</th><th>Email</th><th>Message</th></tr></thead>
+        <tbody>
+          {messages.map((m: any) => (
+            <tr key={m.id} className="border-b">
+              <td className="py-2">{new Date(m.created_at).toLocaleString()}</td>
+              <td>{m.name}</td>
+              <td>{m.email}</td>
+              <td className="max-w-md truncate">{m.message}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }

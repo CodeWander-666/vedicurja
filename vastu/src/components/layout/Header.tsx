@@ -16,13 +16,14 @@ export default function Header() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const menuItems = [
-    { key: 'home', href: '/' },
-    { key: 'freeAITools', href: '/free-tools' },
-    { key: 'services', href: '/services' },
-    { key: 'bookings', href: '/bookings' },
-    { key: 'learnVastu', href: '/learn-vastu' },
-    { key: 'blogs', href: '/insights' },
-    { key: 'testimonials', href: '/client-stories' },
+    { key: "home", href: "/" },
+    { key: "freeAITools", href: "/free-tools" },
+    { key: "services", href: "/services" },
+    { key: "bookings", href: "/bookings" },
+    { key: "learnVastu", href: "/learn-vastu" },
+    { key: "blogs", href: "/insights" },
+    { key: "testimonials", href: "/client-stories" },
+    { key: "about", href: "/about" },
   ];
 
   const handleSignOut = async () => {
@@ -159,7 +160,7 @@ export default function Header() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25 }}
-            className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-white shadow-2xl z-40 lg:hidden"
+            className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-white/95 backdrop-blur-xl shadow-2xl z-40 lg:hidden"
           >
             <div className="p-6 h-full flex flex-col">
               <div className="flex justify-between items-center mb-8">

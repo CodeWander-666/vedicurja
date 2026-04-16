@@ -45,7 +45,7 @@ export function LineageTimeline() {
           })}
         </div>
         <div className="text-center mt-12">
-          <a href="/story" className="luxury-button">Discover Our Full Story</a>
+          <a href="/about" className="luxury-button">Discover Our Full Story</a>
         </div>
       </div>
     </motion.section>

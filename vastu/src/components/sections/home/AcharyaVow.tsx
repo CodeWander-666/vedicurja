@@ -19,7 +19,7 @@ const fallbackData: HomeSection = {
   section_key: 'acharya_vow',
   title: 'Guided by Lineage, Driven by Results',
   subtitle: 'Our Sacred Vow',
-  description: 'For over four decades, our family has preserved the authentic Vastu Shastra traditions of Uttar Pradesh. We blend ancient wisdom with modern precision to transform spaces and lives globally.',
+  description: 'For over four decades, our family has preserved the authentic Vastu Shastra traditions of Uttar Pradesh. Acharya KK Nagaich ji blends ancient wisdom with modern precision to transform spaces and lives globally.',
   button_text: 'Discover Our Lineage',
   button_link: '/about',
   is_published: true,
@@ -38,42 +38,30 @@ export function AcharyaVow() {
   if (!data.is_published) return null;
 
   return (
-    <motion.section ref={ref} style={{ opacity, y }} className="py-24 md:py-32 overflow-hidden bg-vastu-stone/30">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-          <motion.div style={{ scale }} className="relative">
-            <div className="relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl border-4 border-prakash-gold/30">
-              <Image src="/images/home/acharya-portrait.jpg" alt="Acharya" fill className="object-cover" />
+    <motion.section ref={ref} style={{ opacity, y }} className="py-16 sm:py-24 md:py-32 overflow-hidden bg-vastu-stone/30">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl mx-auto">
+          <motion.div style={{ scale }} className="relative order-2 md:order-1">
+            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl border-4 border-prakash-gold/30">
+              <Image src="/images/home/acharya-portrait.jpg" alt="Acharya KK Nagaich ji" fill className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-nidra-indigo/60 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <p className="font-serif text-2xl">Acharya Sharma</p>
-                <p className="text-sm opacity-80">4th Generation Vastu Guru</p>
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+                <p className="font-serif text-xl sm:text-2xl">Acharya KK Nagaich ji</p>
+                <p className="text-xs sm:text-sm opacity-80">4th Generation Vastu Guru</p>
               </div>
             </div>
-            <div className="absolute -bottom-4 -right-4 w-20 h-20 candle-flicker" />
           </motion.div>
-          <motion.div style={{ y }}>
-            <span className="text-sacred-saffron uppercase tracking-widest text-sm">{data.subtitle}</span>
-            <h2 className="font-serif text-4xl md:text-5xl text-nidra-indigo mt-4 mb-6">{data.title}</h2>
-            <p className="text-lg text-nidra-indigo/70 mb-6 leading-relaxed">{data.description}</p>
-            <div className="flex gap-4">
-              <Link href={data.button_link || '#'} className="luxury-button">{data.button_text}</Link>
-              <Link href="/story" className="border-b-2 border-prakash-gold text-nidra-indigo font-medium">Read Our Story →</Link>
+          <motion.div style={{ y }} className="order-1 md:order-2">
+            <span className="text-sacred-saffron uppercase tracking-widest text-xs sm:text-sm">{data.subtitle}</span>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-nidra-indigo mt-4 mb-4 sm:mb-6">{data.title}</h2>
+            <p className="text-base sm:text-lg text-nidra-indigo/70 mb-6 leading-relaxed">{data.description}</p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href={data.button_link || '#'} className="luxury-button text-center">{data.button_text}</Link>
+              <Link href="/about" className="border-b-2 border-prakash-gold text-nidra-indigo font-medium text-center sm:text-left">Read Our Story →</Link>
             </div>
           </motion.div>
         </div>
       </div>
-      <style jsx>{`
-        .candle-flicker {
-          background: radial-gradient(circle, #FF9933 0%, #C10000 70%, transparent 100%);
-          filter: blur(15px);
-          animation: flicker 2s infinite alternate;
-        }
-        @keyframes flicker {
-          0% { opacity: 0.6; transform: scale(1); }
-          100% { opacity: 1; transform: scale(1.1); }
-        }
-      `}</style>
     </motion.section>
   );
 }

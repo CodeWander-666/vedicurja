@@ -1,3 +1,4 @@
+import { Footer } from '@/components/layout/Footer';
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           translate.listener.start();
           translate.execute();
         `}} />
+        <Footer />
       </body>
     </html>
   );

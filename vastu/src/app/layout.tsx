@@ -2,7 +2,6 @@ import { Footer } from '@/components/layout/Footer';
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-import { LanguageSelector } from "@/components/global/LanguageSelector";
 import { AdminProvider } from "@/contexts/AdminContext";
 import LenisSmoothScroll from "@/components/global/LenisSmoothScroll";
 import AuthGateway from "@/components/auth/AuthGateway";
@@ -21,7 +20,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <LanguageProvider>
             <AdminProvider>
-              <LanguageSelector />
               <AuthGateway>
                 <LenisSmoothScroll>
                   {children}

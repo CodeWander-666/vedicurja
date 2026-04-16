@@ -2,13 +2,11 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
-import { Bookshelf3D } from '@/components/learn/Bookshelf3D';
 import { useRealtimeContent } from '@/hooks/useRealtimeContent';
 
 interface HomeSection {
   section_key: string;
   title: string;
-  subtitle: string;
   description: string;
   button_text: string;
   button_link: string;
@@ -17,10 +15,9 @@ interface HomeSection {
 
 const fallbackData: HomeSection = {
   section_key: 'learn_vastu',
-  title: 'Master the Sacred Sciences',
-  subtitle: 'Interactive 3D Bookshelf',
-  description: 'Explore our library of ancient Vastu and numerology texts.',
-  button_text: 'Browse All Courses',
+  title: 'Master the Sacred Science of Vastu',
+  description: 'Online courses taught by Acharya KK Nagaich ji. Live & self‑paced.',
+  button_text: 'Browse Courses',
   button_link: '/learn-vastu',
   is_published: true,
 };
@@ -36,16 +33,13 @@ export function LearnVastuTeaser() {
   if (!data.is_published) return null;
 
   return (
-    <motion.section ref={ref} style={{ y }} className="py-24 md:py-32 bg-vastu-stone/20">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="font-serif text-4xl md:text-5xl text-nidra-indigo mb-4">{data.title}</h2>
-          <p className="text-nidra-indigo/60 max-w-2xl mx-auto">{data.description}</p>
-        </div>
-        <Bookshelf3D />
-        <div className="flex justify-center gap-6 mt-12">
-          <Link href={data.button_link || "#" || '#' || '#'} className="luxury-button">{data.button_text}</Link>
-          <Link href="/dashboard/library" className="border-2 border-prakash-gold text-nidra-indigo px-8 py-4 rounded-full font-medium">My Library</Link>
+    <motion.section ref={ref} style={{ y }} className="py-24 bg-white">
+      <div className="container mx-auto px-4 sm:px-6 text-center">
+        <h2 className="font-serif text-3xl sm:text-4xl text-nidra-indigo mb-4">{data.title}</h2>
+        <p className="text-nidra-indigo/60 max-w-2xl mx-auto mb-8">{data.description}</p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href={data.button_link || '#'} className="luxury-button">{data.button_text}</Link>
+          <Link href="/bookings" className="border-2 border-prakash-gold text-nidra-indigo px-8 py-4 rounded-full font-medium">Book Consultation</Link>
         </div>
       </div>
     </motion.section>

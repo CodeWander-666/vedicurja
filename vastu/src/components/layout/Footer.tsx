@@ -63,7 +63,7 @@ export default function Footer() {
   const copyright = getSetting('footer_copyright') || `© ${new Date().getFullYear()} VedicUrja. All rights reserved.`;
 
   return (
-    <footer className="relative bg-gradient-to-br from-nidra-indigo via-nidra-indigo/95 to-nidra-indigo/90 border-t border-prakash-gold/30 pt-16 pb-8" aria-labelledby="footer-heading">
+    <footer className="relative bg-gradient-to-br from-sacred-saffron via-kumkuma-red to-prakash-gold border-t border-white/30 pt-16 pb-8" aria-labelledby="footer-heading">
       <div className="absolute inset-0 bg-gradient-to-t from-prakash-gold/5 to-transparent pointer-events-none" />
       <h2 id="footer-heading" className="sr-only">Footer</h2>
       <div className="container mx-auto px-6">
@@ -71,13 +71,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-prakash-gold/20">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link href="/" className="font-serif text-2xl text-white hover:text-prakash-gold transition">
-              VedicUrja<span className="text-prakash-gold">.</span>
+            <Link href="/" className="font-serif text-2xl text-white hover:text-white transition">
+              VedicUrja<span className="text-white">.</span>
             </Link>
-            <p className="mt-4 text-sm text-white/70 leading-relaxed">{aboutText}</p>
+            <p className="mt-4 text-sm text-white/90 leading-relaxed">{aboutText}</p>
             <div className="flex space-x-4 mt-6">
               {socialLinks.map((item) => (
-                <a key={item.name} href={item.href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full border border-prakash-gold/40 flex items-center justify-center text-prakash-gold hover:bg-prakash-gold hover:text-nidra-indigo transition">
+                <a key={item.name} href={item.href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full border border-prakash-gold/40 flex items-center justify-center text-white hover:bg-prakash-gold hover:text-nidra-indigo transition">
                   <span className="sr-only">{item.name}</span>
                   <item.icon className="h-4 w-4" aria-hidden="true" />
                 </a>
@@ -87,11 +87,11 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Company</h3>
+            <h3 className="font-serif text-white text-sm uppercase tracking-wider mb-4">Company</h3>
             <ul className="space-y-2">
               {navigation.company.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
+                  <Link href={item.href} className="text-sm text-white/90 hover:text-white transition">
                     {item.name}
                   </Link>
                 </li>
@@ -101,11 +101,11 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Services</h3>
+            <h3 className="font-serif text-white text-sm uppercase tracking-wider mb-4">Services</h3>
             <ul className="space-y-2">
               {navigation.services.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
+                  <Link href={item.href} className="text-sm text-white/90 hover:text-white transition">
                     {item.name}
                   </Link>
                 </li>
@@ -115,21 +115,21 @@ export default function Footer() {
 
           {/* Learn & Dashboard */}
           <div>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Learn</h3>
+            <h3 className="font-serif text-white text-sm uppercase tracking-wider mb-4">Learn</h3>
             <ul className="space-y-2 mb-6">
               {navigation.learn.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
+                  <Link href={item.href} className="text-sm text-white/90 hover:text-white transition">
                     {item.name}
                   </Link>
                 </li>
               ))}
             </ul>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Client Area</h3>
+            <h3 className="font-serif text-white text-sm uppercase tracking-wider mb-4">Client Area</h3>
             <ul className="space-y-2">
               {navigation.dashboard.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-white/70 hover:text-prakash-gold transition">
+                  <Link href={item.href} className="text-sm text-white/90 hover:text-white transition">
                     {item.name}
                   </Link>
                 </li>
@@ -139,19 +139,19 @@ export default function Footer() {
 
           {/* Contact & Newsletter */}
           <div>
-            <h3 className="font-serif text-prakash-gold text-sm uppercase tracking-wider mb-4">Connect</h3>
-            <ul className="space-y-2 text-sm text-white/70">
+            <h3 className="font-serif text-white text-sm uppercase tracking-wider mb-4">Connect</h3>
+            <ul className="space-y-2 text-sm text-white/90">
               <li className="flex items-start gap-2">
                 <span className="mt-0.5">📍</span>
                 <span>{address}</span>
               </li>
               <li className="flex items-center gap-2">
                 <span>📞</span>
-                <a href={`tel:${phone}`} className="hover:text-prakash-gold">{phone}</a>
+                <a href={`tel:${phone}`} className="hover:text-white">{phone}</a>
               </li>
               <li className="flex items-center gap-2">
                 <span>✉️</span>
-                <a href={`mailto:${email}`} className="hover:text-prakash-gold">{email}</a>
+                <a href={`mailto:${email}`} className="hover:text-white">{email}</a>
               </li>
             </ul>
             <form className="mt-6" onSubmit={(e) => e.preventDefault()}>
@@ -175,12 +175,12 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-white/50">
+        <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-white/80">
           <p>{copyright}</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="hover:text-prakash-gold transition">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-prakash-gold transition">Terms & Conditions</Link>
-            <Link href="/sitemap" className="hover:text-prakash-gold transition">Sitemap</Link>
+            <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition">Terms & Conditions</Link>
+            <Link href="/sitemap" className="hover:text-white transition">Sitemap</Link>
           </div>
         </div>
       </div>
