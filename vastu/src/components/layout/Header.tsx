@@ -51,7 +51,7 @@ export default function Header() {
   const isAdmin = profile?.role === 'admin';
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-sacred-saffron/95 via-kumkuma-red/95 to-prakash-gold/95 backdrop-blur-xl shadow-md border-b border-white/30">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-sacred-saffron/95 via-kumkuma-red/95 to-prakash-gold/95 backdrop-blur-xl shadow-md border-b border-white/30">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
@@ -158,34 +158,35 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Full‑Screen Mobile Overlay Menu (Industry Grade) */}
+      {/* Full‑Screen Mobile Overlay Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
+            key="mobile-menu-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 lg:hidden flex"
+            className="fixed inset-0 z-50 lg:hidden"
             style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
-            {/* Backdrop with blur */}
+            {/* Backdrop */}
             <div
-              className="absolute inset-0 bg-nidra-indigo/90 backdrop-blur-xl"
+              className="absolute inset-0 bg-black/40 backdrop-blur-md"
               onClick={() => setMobileMenuOpen(false)}
               aria-hidden="true"
             />
 
-            {/* Slide‑in Menu Panel */}
+            {/* Slide‑in Panel - MOVED OUTSIDE OF ANY RELATIVE PARENT */}
             <motion.div
-              initial={{ x: '100%' }}
+              initial={{ x: "100%" }}
               animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="relative z-10 ml-auto w-full max-w-md h-full bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl flex flex-col overflow-hidden"
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="absolute top-0 bottom-0 right-0 w-full max-w-md bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl flex flex-col overflow-hidden"
             >
-              {/* Header with close button */}
-              <div className="flex justify-end p-4 sm:p-6">
+              {/* Panel Header with Close Button */}
+              <div className="flex justify-end p-4 sm:p-6 flex-shrink-0">
                 <motion.button
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
@@ -202,7 +203,7 @@ export default function Header() {
 
               {/* Scrollable Content */}
               <div className="flex-1 overflow-y-auto overscroll-contain px-4 sm:px-6 pb-6">
-                {/* User Profile Section (if logged in) */}
+                {/* User Profile Section */}
                 {user && (
                   <div className="mb-6 p-4 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30">
                     <div className="flex items-center gap-4">
