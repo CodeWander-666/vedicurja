@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,6 +15,18 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   const menuItems = [
     { key: 'home', href: '/' },
@@ -135,7 +147,7 @@ export default function Header() {
             className="lg:hidden relative w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            aria-label="Menu"
+            aria-label="Open menu"
           >
             <div className="w-6 h-5 flex flex-col justify-between">
               <span className="block w-full h-0.5 bg-white rounded-full" />
@@ -146,7 +158,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Full‑Screen Mobile Overlay Menu */}
+      {/* Full‑Screen Mobile Overlay Menu (Industry Grade) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -154,119 +166,128 @@ export default function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 lg:hidden flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 lg:hidden flex"
+            style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
-            {/* Blurred Background Overlay */}
-            <div 
-              className="absolute inset-0 bg-nidra-indigo/80 backdrop-blur-xl"
+            {/* Backdrop with blur */}
+            <div
+              className="absolute inset-0 bg-nidra-indigo/90 backdrop-blur-xl"
               onClick={() => setMobileMenuOpen(false)}
+              aria-hidden="true"
             />
-            
-            {/* Menu Content */}
+
+            {/* Slide‑in Menu Panel */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative z-10 w-full max-w-md max-h-[85vh] overflow-y-auto overscroll-contain rounded-3xl bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl border-2 border-prakash-gold/50 p-5 sm:p-6"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="relative z-10 ml-auto w-full max-w-md h-full bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl flex flex-col overflow-hidden"
             >
-              {/* Close Button */}
-              <div className="flex justify-end mb-4">
+              {/* Header with close button */}
+              <div className="flex justify-end p-4 sm:p-6">
                 <motion.button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
+                  className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
+                  aria-label="Close menu"
                 >
-                  <span className="text-white text-2xl">✕</span>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
                 </motion.button>
               </div>
 
-              {/* User Profile Section (if logged in) */}
-              {user && (
-                <div className="mb-6 p-4 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/70 bg-white/30 flex items-center justify-center">
-                      {avatarUrl ? (
-                        <Image src={avatarUrl} alt="Profile" width={56} height={56} className="object-cover" />
-                      ) : (
-                        <span className="text-white text-2xl font-medium">{userInitial}</span>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-white font-bold text-lg">{profile?.full_name || 'User'}</p>
-                      <p className="text-white/80 text-sm truncate">{user.email}</p>
-                      {isAdmin && <span className="text-xs bg-white/30 text-white px-2 py-0.5 rounded-full">Admin</span>}
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto overscroll-contain px-4 sm:px-6 pb-6">
+                {/* User Profile Section (if logged in) */}
+                {user && (
+                  <div className="mb-6 p-4 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30">
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/70 bg-white/30 flex items-center justify-center">
+                        {avatarUrl ? (
+                          <Image src={avatarUrl} alt="Profile" width={56} height={56} className="object-cover" />
+                        ) : (
+                          <span className="text-white text-2xl font-medium">{userInitial}</span>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-white font-bold text-lg">{profile?.full_name || 'User'}</p>
+                        <p className="text-white/80 text-sm truncate">{user.email}</p>
+                        {isAdmin && <span className="text-xs bg-white/30 text-white px-2 py-0.5 rounded-full">Admin</span>}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Navigation Links */}
-              <nav className="space-y-3 mb-6">
-                {menuItems.map((item, index) => (
-                  <motion.div
-                    key={item.key}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ scale: 1.02, x: 5 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full px-5 py-4 sm:px-6 sm:py-5 bg-white/90 backdrop-blur-sm border-2 border-white rounded-2xl text-nidra-indigo font-bold text-lg sm:text-xl shadow-lg hover:bg-white hover:shadow-xl transition-all"
+                {/* Navigation Links */}
+                <nav className="space-y-3 mb-6">
+                  {menuItems.map((item, index) => (
+                    <motion.div
+                      key={item.key}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ scale: 1.02, x: 5 }}
+                      whileTap={{ scale: 0.98 }}
                     >
-                      {t(`common.${item.key}`)}
-                    </Link>
-                  </motion.div>
-                ))}
-              </nav>
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block w-full px-5 py-4 sm:px-6 sm:py-5 bg-white/90 backdrop-blur-sm border-2 border-white rounded-2xl text-nidra-indigo font-bold text-lg sm:text-xl shadow-lg hover:bg-white hover:shadow-xl transition-all"
+                      >
+                        {t(`common.${item.key}`)}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </nav>
 
-              {/* Action Buttons */}
-              <div className="space-y-3 border-t border-white/30 pt-4">
-                {user ? (
-                  <>
+                {/* Action Buttons */}
+                <div className="space-y-3 border-t border-white/30 pt-4">
+                  {user ? (
+                    <>
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block w-full text-center py-3 sm:py-4 bg-white text-nidra-indigo rounded-full font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
+                      >
+                        Dashboard
+                      </Link>
+                      {isAdmin && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block w-full text-center py-3 sm:py-4 bg-white/90 text-nidra-indigo rounded-full font-bold text-base sm:text-lg border-2 border-white shadow-lg hover:bg-white transition-all"
+                        >
+                          🛡️ Admin Panel
+                        </Link>
+                      )}
+                      <button
+                        onClick={handleSignOut}
+                        className="block w-full text-center py-3 sm:py-4 bg-transparent border-2 border-white text-white rounded-full font-bold text-base sm:text-lg hover:bg-white/10 transition-all"
+                      >
+                        Sign Out
+                      </button>
+                    </>
+                  ) : (
                     <Link
-                      href="/dashboard"
+                      href="/signin"
                       onClick={() => setMobileMenuOpen(false)}
                       className="block w-full text-center py-3 sm:py-4 bg-white text-nidra-indigo rounded-full font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
                     >
-                      Dashboard
+                      Sign In
                     </Link>
-                    {isAdmin && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block w-full text-center py-3 sm:py-4 bg-white/90 text-nidra-indigo rounded-full font-bold text-base sm:text-lg border-2 border-white shadow-lg hover:bg-white transition-all"
-                      >
-                        🛡️ Admin Panel
-                      </Link>
-                    )}
-                    <button
-                      onClick={handleSignOut}
-                      className="block w-full text-center py-3 sm:py-4 bg-transparent border-2 border-white text-white rounded-full font-bold text-base sm:text-lg hover:bg-white/10 transition-all"
-                    >
-                      Sign Out
-                    </button>
-                  </>
-                ) : (
+                  )}
                   <Link
-                    href="/signin"
+                    href="/contact"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block w-full text-center py-3 sm:py-4 bg-white text-nidra-indigo rounded-full font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
                   >
-                    Sign In
+                    {t('common.consult')}
                   </Link>
-                )}
-                <Link
-                  href="/contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block w-full text-center py-3 sm:py-4 bg-white text-nidra-indigo rounded-full font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all"
-                >
-                  {t('common.consult')}
-                </Link>
+                </div>
               </div>
             </motion.div>
           </motion.div>
