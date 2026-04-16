@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,17 +15,6 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
-
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [mobileMenuOpen]);
 
   const menuItems = [
     { key: 'home', href: '/' },
@@ -50,19 +39,7 @@ export default function Header() {
   const isAdmin = profile?.role === 'admin';
 
   return (
-    <header
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 30,
-        background: 'linear-gradient(to right, rgba(255,153,51,0.95), rgba(193,0,0,0.95), rgba(232,185,96,0.95))',
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
-        borderBottom: '1px solid rgba(255,255,255,0.3)',
-      }}
-    >
+    <header className="fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-sacred-saffron/95 via-kumkuma-red/95 to-prakash-gold/95 backdrop-blur-xl shadow-md border-b border-white/30">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
@@ -158,7 +135,7 @@ export default function Header() {
             className="lg:hidden relative w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            aria-label="Open menu"
+            aria-label="Menu"
           >
             <div className="w-6 h-5 flex flex-col justify-between">
               <span className="block w-full h-0.5 bg-white rounded-full" />
@@ -177,27 +154,21 @@ export default function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] lg:hidden flex items-center justify-center p-4"
-            style={{ zIndex: 100 }}
+            className="fixed inset-0 z-50 lg:hidden flex items-center justify-center p-4 pt-16"
           >
             {/* Blurred Background Overlay */}
-            <div
-              className="absolute inset-0 bg-black/50 backdrop-blur-xl"
+            <div 
+              className="absolute inset-0 bg-nidra-indigo/80 backdrop-blur-xl"
               onClick={() => setMobileMenuOpen(false)}
-              aria-hidden="true"
             />
-
+            
             {/* Menu Content */}
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative z-10 w-full max-w-md max-h-[85vh] overflow-y-auto overscroll-contain rounded-3xl shadow-2xl border-2 border-prakash-gold/50 p-5 sm:p-6"
-              style={{
-                background: 'linear-gradient(to bottom, #FF9933, #C10000, #E8B960)',
-                zIndex: 101,
-              }}
+              className="relative z-10 w-full max-w-md max-h-[85vh] overflow-y-auto overscroll-contain rounded-3xl bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl border-2 border-prakash-gold/50 p-5 sm:p-6"
             >
               {/* Close Button */}
               <div className="flex justify-end mb-4">
