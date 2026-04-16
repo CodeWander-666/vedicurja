@@ -100,14 +100,14 @@ export default function Header() {
                     className="absolute right-0 mt-3 w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-white/30 overflow-hidden"
                   >
                     <div className="p-3 border-b border-white/20">
-                      <p className="font-medium text-white">{profile?.full_name || 'User'}</p>
-                      <p className="text-xs text-white/60 truncate">{user.email}</p>
+                      <p className="font-medium text-nidra-indigo">{profile?.full_name || 'User'}</p>
+                      <p className="text-xs text-nidra-indigo/60 truncate">{user.email}</p>
                     </div>
-                    <Link href="/dashboard" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-white">Dashboard</Link>
-                    <Link href="/dashboard/library" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-white">My Library</Link>
-                    <Link href="/dashboard/account" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-white">Account Settings</Link>
+                    <Link href="/dashboard" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-nidra-indigo">Dashboard</Link>
+                    <Link href="/dashboard/library" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-nidra-indigo">My Library</Link>
+                    <Link href="/dashboard/account" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition text-nidra-indigo">Account Settings</Link>
                     {isAdmin && (
-                      <Link href="/admin" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition border-t border-white/20 text-white">🛡️ Admin Panel</Link>
+                      <Link href="/admin" onClick={() => setProfileMenuOpen(false)} className="block px-4 py-3 hover:bg-prakash-gold/10 transition border-t border-white/20 text-nidra-indigo">🛡️ Admin Panel</Link>
                     )}
                     <button onClick={handleSignOut} className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 transition">Sign Out</button>
                   </motion.div>
@@ -115,7 +115,7 @@ export default function Header() {
               </AnimatePresence>
             </div>
           ) : (
-            <MagneticButton className="bg-white/20 backdrop-blur-sm border border-white/50 text-white font-medium px-5 py-2 rounded-full hover:bg-white hover:text-white transition">
+            <MagneticButton className="bg-white/20 backdrop-blur-sm border border-white/50 text-white font-medium px-5 py-2 rounded-full hover:bg-white hover:text-nidra-indigo transition">
               <Link href="/signin">Sign In</Link>
             </MagneticButton>
           )}
@@ -124,7 +124,7 @@ export default function Header() {
             <Link href="/admin" className="hidden sm:block text-xs bg-white/30 backdrop-blur-sm text-white px-3 py-1 rounded-full border border-white/50">Admin</Link>
           )}
 
-          <MagneticButton className="hidden sm:block bg-white text-white font-medium px-5 py-2 rounded-full shadow-md hover:shadow-lg transition">
+          <MagneticButton className="hidden sm:block bg-white text-nidra-indigo font-medium px-5 py-2 rounded-full shadow-md hover:shadow-lg transition">
             <Link href="/contact">{t('common.consult')}</Link>
           </MagneticButton>
 
@@ -185,9 +185,9 @@ export default function Header() {
                     <button onClick={handleSignOut} className="block w-full text-center py-3 text-white border border-white/50 rounded-full">Sign Out</button>
                   </>
                 ) : (
-                  <Link href="/signin" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white text-white rounded-full font-medium">Sign In</Link>
+                  <Link href="/signin" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white text-nidra-indigo rounded-full font-medium">Sign In</Link>
                 )}
-                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white text-white rounded-full font-medium shadow-lg">
+                <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block w-full text-center py-3 bg-white text-nidra-indigo rounded-full font-medium shadow-lg">
                   {t('common.consult')}
                 </Link>
               </div>

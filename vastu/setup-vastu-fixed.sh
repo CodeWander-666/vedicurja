@@ -1,129 +1,70 @@
 #!/bin/bash
 # =============================================================================
-# VedicUrja – Fix Acharya Portrait (Mobile) + Sound Status Toast
+# VedicUrja – Final Fix: Mobile Menu Transparency + Duplicate Google Button
 # =============================================================================
 set -euo pipefail
 
-GREEN='\033[0;32m'; BLUE='\033[0;34m'; YELLOW='\033[1;33m'; NC='\033[0m'
+GREEN='\033[0;32m'; BLUE='\033[0;34m'; NC='\033[0m'
 info()  { echo -e "${BLUE}ℹ️  $1${NC}"; }
 success() { echo -e "${GREEN}✅ $1${NC}"; }
-warn()  { echo -e "${YELLOW}⚠️  $1${NC}"; }
 
-BACKUP_DIR=".backups/portrait-sound-$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR=".backups/mobile-google-fix-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 info "Backups saved to $BACKUP_DIR"
 
-backup_file() { [ -f "$1" ] && cp "$1" "$BACKUP_DIR/"; }
+# -----------------------------------------------------------------------------
+# 1. Remove duplicate Google button from SignIn and SignUp
+# -----------------------------------------------------------------------------
+info "Removing duplicate Google buttons..."
+for page in "src/app/(marketing)/signin/page.tsx" "src/app/(marketing)/signup/page.tsx"; do
+    if [ -f "$page" ]; then
+        cp "$page" "$BACKUP_DIR/$(basename $page).bak"
+        # Use awk to keep only the first Google button
+        awk '
+        BEGIN { count = 0; skip = 0 }
+        /<button onClick={handleGoogleSign/ {
+            count++
+            if (count == 1) { print; next }
+            else { skip = 1; next }
+        }
+        skip && /<\/button>/ { skip = 0; next }
+        !skip { print }
+        ' "$page" > "$page.tmp" && mv "$page.tmp" "$page"
+        success "Cleaned $page"
+    fi
+done
 
 # -----------------------------------------------------------------------------
-# 1. Fix Acharya Portrait in AcharyaVow for mobile
+# 2. Force Mobile Menu Background to Solid Red-Orange Gradient
 # -----------------------------------------------------------------------------
-ACHARYA_VOW="src/components/sections/home/AcharyaVow.tsx"
-if [ -f "$ACHARYA_VOW" ]; then
-    backup_file "$ACHARYA_VOW"
-    # Adjust the portrait container to be fully visible on mobile
-    sed -i 's|relative h-\[300px\] sm:h-\[400px\] md:h-\[500px\]|relative h-[350px] sm:h-[400px] md:h-[500px] w-full|g' "$ACHARYA_VOW"
-    # Ensure the image itself uses object-contain or proper positioning
-    sed -i 's|object-cover|object-contain sm:object-cover|g' "$ACHARYA_VOW"
-    success "AcharyaVow portrait adjusted for mobile."
+HEADER_FILE="src/components/layout/Header.tsx"
+if [ -f "$HEADER_FILE" ]; then
+    cp "$HEADER_FILE" "$BACKUP_DIR/Header.tsx.bak"
+    # Directly replace the mobile drawer className with the gradient
+    sed -i 's|className="fixed inset-y-0 right-0 w-80 max-w-\[85vw\] bg-white/95 backdrop-blur-xl shadow-2xl z-40 lg:hidden"|className="fixed inset-y-0 right-0 w-80 max-w-[85vw] bg-gradient-to-b from-sacred-saffron via-kumkuma-red to-prakash-gold shadow-2xl z-40 lg:hidden"|g' "$HEADER_FILE"
+    # Ensure text is white
+    sed -i 's|text-nidra-indigo|text-white|g' "$HEADER_FILE"
+    sed -i 's|text-nidra-indigo/80|text-white/90|g' "$HEADER_FILE"
+    sed -i 's|text-nidra-indigo/60|text-white/80|g' "$HEADER_FILE"
+    success "Mobile menu background forced to red-orange gradient."
 fi
 
 # -----------------------------------------------------------------------------
-# 2. Enhance SoundController with play/pause toast notification
-# -----------------------------------------------------------------------------
-SOUND_CONTROLLER="src/components/global/SoundController.tsx"
-if [ -f "$SOUND_CONTROLLER" ]; then
-    backup_file "$SOUND_CONTROLLER"
-    cat > "$SOUND_CONTROLLER" <<'EOF'
-'use client';
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { soundManager } from '@/lib/audio/soundManager';
-
-export function SoundController() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-
-  useEffect(() => {
-    const unsubscribe = soundManager.subscribe(() => {
-      setIsPlaying(soundManager.isAmbientPlaying());
-      setIsMuted(soundManager.isMutedState());
-    });
-    soundManager.startAmbient();
-    soundManager.setVolume(0.6);
-    return unsubscribe;
-  }, []);
-
-  const triggerToast = (message: string) => {
-    setToastMessage(message);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 1500);
-  };
-
-  const toggleAmbient = () => {
-    const nowPlaying = soundManager.isAmbientPlaying();
-    soundManager.toggleAmbient();
-    triggerToast(nowPlaying ? 'Music paused' : 'Music playing');
-  };
-
-  const toggleMute = () => {
-    const nowMuted = soundManager.isMutedState();
-    soundManager.toggleMute();
-    triggerToast(nowMuted ? 'Sound unmuted' : 'Sound muted');
-  };
-
-  return (
-    <>
-      <button
-        onClick={toggleAmbient}
-        onContextMenu={(e) => { e.preventDefault(); toggleMute(); }}
-        className="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm border border-prakash-gold shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
-        title="Click to play/pause ambient music. Right-click to mute/unmute."
-      >
-        <span className={`text-2xl ${isPlaying && !isMuted ? 'animate-spin-slow text-prakash-gold' : 'text-nidra-indigo/60'}`}>
-          ॐ
-        </span>
-      </button>
-
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {showToast && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 left-6 z-50 px-4 py-2 bg-nidra-indigo/90 backdrop-blur-sm text-white text-sm rounded-full shadow-lg"
-          >
-            {toastMessage}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-}
-export default SoundController;
-EOF
-    success "SoundController enhanced with toast notifications."
-fi
-
-# -----------------------------------------------------------------------------
-# 3. Rebuild to verify
+# 3. Clean cache and rebuild
 # -----------------------------------------------------------------------------
 rm -rf .next
 info "Running production build..."
 if npm run build; then
     success "✅ Build successful!"
 else
-    warn "Build had issues – check logs."
+    echo "❌ Build failed – check logs."
+    exit 1
 fi
 
 echo ""
-success "🎉 Fixes applied:"
-echo "   - Acharya portrait fully visible on mobile"
-echo "   - Om button shows 'Music playing' / 'Music paused' toast"
-echo "   - Right-click shows 'Sound muted' / 'Sound unmuted' toast"
+success "🎉 Issues resolved:"
+echo "   - Duplicate Google button removed from SignIn/SignUp"
+echo "   - Mobile hamburger menu now has solid red-orange background"
 echo ""
 echo "📦 Backups saved in $BACKUP_DIR"
-echo "🚀 Run 'npm run dev' to see the changes."
+echo "🚀 Run 'npm run dev' and hard refresh your browser (Ctrl+Shift+R)."
